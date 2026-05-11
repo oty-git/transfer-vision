@@ -1,36 +1,80 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Transfer Vision
 
-## Getting Started
+AI-powered football scouting platform. This repo is a **learning adaptation** used to prepare for Senior Frontend interviews — practicing production patterns end-to-end on a real product idea.
 
-First, run the development server:
+## Stack
+
+| Layer | Choice |
+|-------|--------|
+| Framework | Next.js 16 (App Router, Turbopack, React Compiler) |
+| Language | TypeScript strict — no `any` |
+| Server state | TanStack Query |
+| Client state | Redux Toolkit |
+| API | REST + GraphQL (`graphql-request`) |
+| UI | Tailwind CSS v4 + shadcn/ui |
+| Forms | React Hook Form + Zod |
+| Unit tests | Vitest + React Testing Library |
+| E2E tests | Playwright |
+| Network mocking | MSW |
+| Monitoring | Sentry |
+| Deploy | Vercel via GitHub Actions (planned) |
+
+## Commands
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run dev          # dev server (Turbopack)
+npm run build        # production build
+npm run typecheck    # tsc --noEmit
+npm run lint         # ESLint
+npm test             # Vitest (run once)
+npm run test:watch   # Vitest watch
+npm run test:e2e     # Playwright
+npm run format       # Prettier
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Project structure
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+src/
+├── app/
+│   ├── (public)/        # unauthenticated pages (landing)
+│   ├── (app)/           # authenticated shell (sidebar + pages)
+│   ├── layout.tsx       # root layout — fonts, Providers
+│   └── providers.tsx    # 'use client' — TanStack Query + Redux
+├── components/
+│   ├── ui/              # shadcn primitives
+│   └── features/        # cross-feature shared components
+├── features/            # feature-sliced modules
+├── lib/                 # shared utilities
+├── hooks/               # shared React hooks
+├── store/               # Redux Toolkit (slices, store, typed hooks)
+├── types/               # shared TS types
+└── mocks/               # MSW handlers
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+tests/
+├── e2e/                 # Playwright specs
+└── setup.ts             # Vitest setup (RTL matchers, MSW lifecycle)
 
-## Learn More
+docs/
+├── architecture.md      # system design decisions
+├── conventions.md       # coding conventions
+├── adr/                 # Architecture Decision Records
+└── assets/              # reference images (Transfer Vision originals)
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Claude Code integration
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Custom slash commands in `.claude/commands/`:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- `/review` — Senior-level code review (🔴🟡🟢)
+- `/test` — TDD guided workflow
+- `/explain` — explain pattern/file in interview terms
+- `/interview` — mock technical interview round
 
-## Deploy on Vercel
+MCP servers (`.mcp.json`): `context7` (live docs), `playwright` (browser automation).
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Docs
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- [Architecture](docs/architecture.md)
+- [Conventions](docs/conventions.md)
+- [ADR 0001 — Stack decisions](docs/adr/0001-stack-decisions.md)

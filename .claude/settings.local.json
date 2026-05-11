@@ -2,10 +2,17 @@
   "permissions": {
     "allow": [
       "Bash(mkdir -p docs/assets && mv IMG-*.jpg docs/assets/ && ls docs/assets/)",
-      "Bash(npx --yes create-next-app@latest . --typescript --tailwind --app --src-dir --import-alias \"@/*\" --eslint --turbopack --use-npm --yes)"
+      "Bash(npx --yes create-next-app@latest . --typescript --tailwind --app --src-dir --import-alias \"@/*\" --eslint --turbopack --use-npm --yes)",
+      "Bash(npm install *)",
+      "Bash(npx --yes shadcn@latest init --defaults --yes --base-color neutral)",
+      "Bash(npx --yes shadcn@latest init --defaults --yes)",
+      "Bash(npx playwright *)",
+      "Bash(mkdir -p src/features src/hooks src/store src/types src/mocks src/components/features tests/e2e docs/adr .claude/commands .vscode && ls src/ && ls .claude/ && ls tests/)",
+      "Bash(npm uninstall *)"
     ],
     "additionalDirectories": [
-      "d:\\oty\\learning\\development\\transfer-vision"
+      "d:\\oty\\learning\\development\\transfer-vision",
+      "D:\\oty\\learning\\development\\transfer-vision\\.claude"
     ]
   }
 }
