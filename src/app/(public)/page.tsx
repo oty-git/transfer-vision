@@ -1,19 +1,23 @@
-import Sidebar from '@/components/features/sidebar';
-import { navItems } from '@/lib/nav';
+import { LandingNav } from '@/components/features/landing/landing-nav';
+import { HeroSection } from '@/components/features/landing/hero-section';
+import { HowSection } from '@/components/features/landing/how-section';
+import { IndexSection } from '@/components/features/landing/index-section';
+import { PathSection } from '@/components/features/landing/path-section';
+import { UploadSection } from '@/components/features/landing/upload-section';
+import { WhySection } from '@/components/features/landing/why-section';
+import { LandingFooter } from '@/components/features/landing/landing-footer';
 
-// TODO: Sidebar тут тимчасово для розробки — прибрати після реалізації auth middleware.
-// На продакшн / не повинна мати sidebar (це зона (public), не (app)).
-
-export default function Home() {
+export default function LandingPage() {
   return (
-    <div className="flex min-h-screen">
-      <Sidebar items={navItems} />
-      <main className="flex flex-1 flex-col items-center justify-center">
-        <h1 className="text-4xl font-bold tracking-tight">Transfer Vision</h1>
-        <p className="mt-4 text-lg text-muted-foreground">
-          AI-powered football scouting platform
-        </p>
-      </main>
+    <div className="landing-root">
+      <LandingNav />
+      <HeroSection />
+      <HowSection />
+      <IndexSection />
+      <PathSection />
+      <UploadSection />
+      <WhySection />
+      <LandingFooter />
     </div>
   );
 }

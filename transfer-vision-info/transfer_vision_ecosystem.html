@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500;600&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --tv-green: #00E676;
+    --tv-green-dim: #00C853;
+    --tv-dark: #0A0F0A;
+    --tv-surface: #111811;
+    --tv-card: #161E16;
+    --tv-border: rgba(0,230,118,0.15);
+    --tv-border-strong: rgba(0,230,118,0.4);
+    --tv-text: #E8F5E9;
+    --tv-muted: #6B7C6B;
+    --tv-amber: #FFB300;
+    --tv-blue: #29B6F6;
+    --tv-coral: #FF7043;
+    --tv-purple: #CE93D8;
+    --font-head: 'Barlow Condensed', sans-serif;
+    --font-body: 'Barlow', sans-serif;
+  }
+
+  body {
+    background: var(--tv-dark);
+    color: var(--tv-text);
+    font-family: var(--font-body);
+    font-size: 14px;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* PITCH GRID BACKGROUND */
+  .pitch-bg {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background-image:
+      linear-gradient(rgba(0,230,118,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,230,118,0.03) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrap { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 0 20px 60px; }
+
+  /* HEADER */
+  .header {
+    padding: 32px 0 24px;
+    border-bottom: 1px solid var(--tv-border);
+    margin-bottom: 28px;
+  }
+  .logo-row { display: flex; align-items: center; gap: 14px; margin-bottom: 6px; }
+  .logo-mark {
+    width: 42px; height: 42px;
+    background: var(--tv-green);
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .logo-mark span {
+    font-family: var(--font-head);
+    font-weight: 900;
+    font-size: 15px;
+    color: #000;
+    letter-spacing: -0.5px;
+  }
+  .brand-name {
+    font-family: var(--font-head);
+    font-weight: 900;
+    font-size: 36px;
+    letter-spacing: 2px;
+    color: #fff;
+    line-height: 1;
+  }
+  .brand-name span { color: var(--tv-green); }
+  .tagline {
+    font-size: 12px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--tv-muted);
+    margin-top: 4px;
+  }
+
+  /* TVS INDEX BADGE */
+  .tvs-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(0,230,118,0.08);
+    border: 1px solid var(--tv-border-strong);
+    border-radius: 4px;
+    padding: 3px 10px;
+    font-family: var(--font-head);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    color: var(--tv-green);
+    text-transform: uppercase;
+  }
+  .tvs-dot { width: 6px; height: 6px; background: var(--tv-green); border-radius: 50%; animation: pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.7)} }
+
+  /* NAV TABS */
+  .nav { display: flex; gap: 4px; margin-bottom: 24px; overflow-x: auto; padding-bottom: 4px; }
+  .nav::-webkit-scrollbar { height: 2px; }
+  .nav::-webkit-scrollbar-thumb { background: var(--tv-border-strong); }
+  .nav-tab {
+    flex-shrink: 0;
+    padding: 8px 16px;
+    border: 1px solid var(--tv-border);
+    border-radius: 4px;
+    background: transparent;
+    color: var(--tv-muted);
+    font-family: var(--font-head);
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all .2s;
+    white-space: nowrap;
+  }
+  .nav-tab:hover { border-color: var(--tv-green); color: var(--tv-text); }
+  .nav-tab.active { background: var(--tv-green); border-color: var(--tv-green); color: #000; }
+
+  /* PANELS */
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* SECTION HEADER */
+  .sec-header { margin-bottom: 20px; }
+  .sec-title {
+    font-family: var(--font-head);
+    font-weight: 900;
+    font-size: 28px;
+    letter-spacing: 1px;
+    color: #fff;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .sec-subtitle { font-size: 13px; color: var(--tv-muted); line-height: 1.5; }
+  .sec-accent { color: var(--tv-green); }
+
+  /* CARD */
+  .card {
+    background: var(--tv-card);
+    border: 1px solid var(--tv-border);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 14px;
+    transition: border-color .2s;
+  }
+  .card:hover { border-color: var(--tv-border-strong); }
+  .card-title {
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+    color: var(--tv-text);
+    margin-bottom: 8px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .card-body { font-size: 13px; color: var(--tv-muted); line-height: 1.6; }
+
+  /* GRID */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+  @media(max-width:600px){ .grid-2,.grid-3{ grid-template-columns: 1fr; } }
+
+  /* ===================== INTERSCOUT ===================== */
+  .tvs-meter-wrap { margin: 16px 0; }
+  .tvs-bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .tvs-label { font-size: 12px; color: var(--tv-muted); width: 90px; flex-shrink: 0; }
+  .tvs-bar-bg {
+    flex: 1; height: 6px; background: rgba(255,255,255,0.07); border-radius: 3px; overflow: hidden;
+  }
+  .tvs-bar-fill {
+    height: 100%; border-radius: 3px;
+    background: linear-gradient(90deg, var(--tv-green-dim), var(--tv-green));
+    transition: width .6s cubic-bezier(.4,0,.2,1);
+  }
+  .tvs-val { font-family: var(--font-head); font-size: 13px; font-weight: 700; color: var(--tv-green); width: 36px; text-align: right; flex-shrink: 0; }
+
+  .tvs-score-big {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: rgba(0,230,118,0.05);
+    border: 1px solid var(--tv-border-strong);
+    border-radius: 8px;
+    padding: 24px 16px;
+    margin-bottom: 14px;
+  }
+  .tvs-number {
+    font-family: var(--font-head);
+    font-weight: 900;
+    font-size: 72px;
+    color: var(--tv-green);
+    line-height: 1;
+  }
+  .tvs-label-big { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--tv-muted); margin-top: 4px; }
+  .tvs-tier { margin-top: 8px; }
+
+  .tier-badge {
+    display: inline-block;
+    padding: 3px 12px;
+    border-radius: 3px;
+    font-family: var(--font-head);
+    font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+  }
+  .tier-s { background: rgba(255,179,0,.15); color: var(--tv-amber); border: 1px solid rgba(255,179,0,.3); }
+  .tier-a { background: rgba(0,230,118,.12); color: var(--tv-green); border: 1px solid rgba(0,230,118,.3); }
+  .tier-b { background: rgba(41,182,246,.1); color: var(--tv-blue); border: 1px solid rgba(41,182,246,.3); }
+  .tier-c { background: rgba(206,147,216,.1); color: var(--tv-purple); border: 1px solid rgba(206,147,216,.3); }
+  .tier-d { background: rgba(255,112,67,.1); color: var(--tv-coral); border: 1px solid rgba(255,112,67,.3); }
+
+  .url-input-row {
+    display: flex; gap: 8px; margin-bottom: 16px;
+  }
+  .url-input {
+    flex: 1;
+    background: rgba(255,255,255,.04);
+    border: 1px solid var(--tv-border);
+    border-radius: 4px;
+    padding: 9px 12px;
+    color: var(--tv-text);
+    font-family: var(--font-body);
+    font-size: 13px;
+    outline: none;
+    transition: border-color .2s;
+  }
+  .url-input:focus { border-color: var(--tv-green); }
+  .url-input::placeholder { color: var(--tv-muted); }
+  .btn-analyze {
+    background: var(--tv-green);
+    color: #000;
+    border: none;
+    border-radius: 4px;
+    padding: 9px 20px;
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all .2s;
+    white-space: nowrap;
+  }
+  .btn-analyze:hover { background: #00C853; transform: translateY(-1px); }
+  .btn-analyze:active { transform: translateY(0); }
+
+  /* Radar Chart */
+  .radar-wrap { display: flex; justify-content: center; margin-bottom: 14px; }
+
+  /* ===================== DRAFT ZONE ===================== */
+  .player-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--tv-border);
+  }
+  .player-row:last-child { border-bottom: none; }
+  .player-rank {
+    font-family: var(--font-head);
+    font-weight: 900;
+    font-size: 22px;
+    color: var(--tv-muted);
+    width: 32px;
+    flex-shrink: 0;
+    text-align: center;
+  }
+  .player-rank.gold { color: var(--tv-amber); }
+  .player-rank.silver { color: #9E9E9E; }
+  .player-rank.bronze { color: #8D6E63; }
+  .player-avatar {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background: var(--tv-surface);
+    border: 2px solid var(--tv-border);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-head); font-size: 15px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .player-info { flex: 1; min-width: 0; }
+  .player-name { font-weight: 600; font-size: 14px; color: var(--tv-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .player-meta { font-size: 11px; color: var(--tv-muted); margin-top: 1px; }
+  .player-tvs {
+    font-family: var(--font-head);
+    font-weight: 900;
+    font-size: 20px;
+    color: var(--tv-green);
+    flex-shrink: 0;
+    text-align: right;
+  }
+  .player-tier { flex-shrink: 0; }
+
+  .compare-btn {
+    display: inline-block;
+    background: transparent;
+    border: 1px solid var(--tv-border-strong);
+    color: var(--tv-green);
+    border-radius: 4px;
+    padding: 5px 12px;
+    font-family: var(--font-head);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all .2s;
+    flex-shrink: 0;
+  }
+  .compare-btn:hover { background: rgba(0,230,118,.1); }
+
+  /* Club compare */
+  .club-compare-grid { display: grid; grid-template-columns: 1fr auto 1fr; gap: 14px; align-items: center; margin-bottom: 14px; }
+  .club-card {
+    background: var(--tv-card);
+    border: 1px solid var(--tv-border);
+    border-radius: 8px;
+    padding: 16px;
+    text-align: center;
+  }
+  .club-shield {
+    width: 48px; height: 48px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+    margin: 0 auto 8px;
+  }
+  .club-name-big { font-family: var(--font-head); font-weight: 700; font-size: 16px; color: var(--tv-text); }
+  .club-country { font-size: 11px; color: var(--tv-muted); margin-bottom: 8px; }
+  .club-tvs-big { font-family: var(--font-head); font-weight: 900; font-size: 38px; color: var(--tv-green); line-height: 1; }
+  .club-tvs-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--tv-muted); }
+
+  .vs-divider {
+    font-family: var(--font-head); font-weight: 900; font-size: 22px; color: var(--tv-muted);
+    text-align: center;
+  }
+
+  .stat-compare-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .stat-name { font-size: 11px; color: var(--tv-muted); width: 100px; flex-shrink: 0; }
+  .stat-bar-a { height: 4px; border-radius: 2px; background: var(--tv-green); transition: width .5s; }
+  .stat-bar-b { height: 4px; border-radius: 2px; background: var(--tv-blue); transition: width .5s; }
+  .stat-val-a { font-size: 12px; font-weight: 600; color: var(--tv-green); width: 30px; text-align: right; flex-shrink: 0; }
+  .stat-val-b { font-size: 12px; font-weight: 600; color: var(--tv-blue); width: 30px; flex-shrink: 0; }
+  .stat-bars { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+
+  /* ===================== TRIAL MAP ===================== */
+  .filter-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+  .filter-chip {
+    padding: 5px 12px;
+    border: 1px solid var(--tv-border);
+    border-radius: 20px;
+    font-size: 12px;
+    color: var(--tv-muted);
+    cursor: pointer;
+    transition: all .2s;
+    background: transparent;
+  }
+  .filter-chip:hover { border-color: var(--tv-green); color: var(--tv-text); }
+  .filter-chip.active { background: rgba(0,230,118,.1); border-color: var(--tv-green); color: var(--tv-green); }
+
+  .club-list-item {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--tv-border);
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .club-list-item:hover { padding-left: 6px; }
+  .club-list-item:last-child { border-bottom: none; }
+  .club-logo-sm {
+    width: 40px; height: 40px;
+    background: var(--tv-surface);
+    border: 1px solid var(--tv-border);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; flex-shrink: 0;
+  }
+  .club-list-info { flex: 1; }
+  .club-list-name { font-weight: 600; font-size: 14px; color: var(--tv-text); }
+  .club-list-meta { font-size: 11px; color: var(--tv-muted); margin-top: 2px; }
+  .trial-tags { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 4px; }
+  .trial-tag {
+    padding: 2px 7px; border-radius: 3px;
+    font-size: 10px; font-weight: 600; letter-spacing: .5px; text-transform: uppercase;
+  }
+  .tag-online { background: rgba(41,182,246,.1); color: var(--tv-blue); border: 1px solid rgba(41,182,246,.25); }
+  .tag-offline { background: rgba(255,112,67,.1); color: var(--tv-coral); border: 1px solid rgba(255,112,67,.25); }
+  .tag-academy { background: rgba(206,147,216,.1); color: var(--tv-purple); border: 1px solid rgba(206,147,216,.25); }
+  .club-list-tvs { font-family: var(--font-head); font-weight: 900; font-size: 22px; color: var(--tv-green); flex-shrink: 0; }
+
+  /* TVS dial for clubs */
+  .tvs-range { font-size: 10px; color: var(--tv-muted); text-align: center; margin-top: 2px; }
+
+  /* ===================== TACTIQ ===================== */
+  .match-event {
+    display: flex; gap: 10px; padding: 10px 0;
+    border-bottom: 1px solid var(--tv-border);
+  }
+  .match-event:last-child { border-bottom: none; }
+  .event-min {
+    font-family: var(--font-head); font-size: 14px; font-weight: 700; color: var(--tv-green);
+    width: 36px; flex-shrink: 0; text-align: right;
+  }
+  .event-type { font-size: 16px; flex-shrink: 0; }
+  .event-desc { font-size: 13px; color: var(--tv-text); line-height: 1.4; }
+  .event-meta { font-size: 11px; color: var(--tv-muted); }
+
+  .zone-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 6px; margin-bottom: 14px;
+  }
+  .zone-cell {
+    background: var(--tv-surface);
+    border: 1px solid var(--tv-border);
+    border-radius: 4px;
+    padding: 10px 8px;
+    text-align: center;
+  }
+  .zone-name { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--tv-muted); margin-bottom: 4px; }
+  .zone-pct { font-family: var(--font-head); font-weight: 700; font-size: 20px; color: var(--tv-text); }
+  .zone-heat {
+    height: 3px; border-radius: 2px; margin-top: 6px;
+    background: linear-gradient(90deg, var(--tv-green-dim), var(--tv-green));
+  }
+
+  /* MINI FIELD VISUALIZATION */
+  .mini-field { margin-bottom: 14px; }
+
+  /* ===================== OVERVIEW / HOME ===================== */
+  .feature-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 24px; }
+  @media(max-width:520px){ .feature-grid { grid-template-columns: 1fr; } }
+
+  .feature-card {
+    background: var(--tv-card);
+    border: 1px solid var(--tv-border);
+    border-radius: 8px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all .2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .feature-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: var(--accent-color, var(--tv-green));
+    opacity: .6;
+  }
+  .feature-card:hover { border-color: var(--accent-color, var(--tv-green)); transform: translateY(-2px); }
+  .feature-icon { font-size: 28px; margin-bottom: 10px; }
+  .feature-name {
+    font-family: var(--font-head); font-weight: 700; font-size: 18px;
+    letter-spacing: 1px; text-transform: uppercase; color: #fff; margin-bottom: 4px;
+  }
+  .feature-desc { font-size: 12px; color: var(--tv-muted); line-height: 1.5; }
+  .feature-tvs-label {
+    margin-top: 12px;
+    font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--accent-color, var(--tv-green));
+  }
+
+  .stat-row { display: flex; gap: 14px; margin-bottom: 24px; }
+  .stat-cell {
+    flex: 1;
+    background: var(--tv-card);
+    border: 1px solid var(--tv-border);
+    border-radius: 8px;
+    padding: 16px;
+    text-align: center;
+  }
+  .stat-num { font-family: var(--font-head); font-weight: 900; font-size: 28px; color: var(--tv-green); }
+  .stat-label { font-size: 11px; color: var(--tv-muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+  @media(max-width:480px){ .stat-row { flex-wrap: wrap; } .stat-cell { min-width: calc(50% - 7px); } }
+</style>
+</head>
+<body>
+<div class="pitch-bg"></div>
+<div class="wrap">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="logo-row">
+      <div class="logo-mark"><span>TV</span></div>
+      <div>
+        <div class="brand-name">Transfer<span>Vision</span></div>
+        <div class="tagline">Football Intelligence Ecosystem</div>
+      </div>
+      <div style="margin-left:auto">
+        <div class="tvs-badge"><div class="tvs-dot"></div>TVS Live</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <div class="nav">
+    <button class="nav-tab active" onclick="switchTab('home')">Overview</button>
+    <button class="nav-tab" onclick="switchTab('interscout')">⬡ InterScout</button>
+    <button class="nav-tab" onclick="switchTab('draft')">◈ Draft Zone</button>
+    <button class="nav-tab" onclick="switchTab('trial')">◎ Trial Map</button>
+    <button class="nav-tab" onclick="switchTab('tactiq')">△ TactIQ</button>
+  </div>
+
+  <!-- ============== HOME PANEL ============== -->
+  <div id="panel-home" class="panel active">
+    <div class="sec-header">
+      <div class="sec-title">Единая экосистема <span class="sec-accent">футбольной разведки</span></div>
+      <div class="sec-subtitle">TVS — Tetra Velocity Soccer Index. Единый стандарт оценки игрока, клуба, академии. Шкала 0–1000.</div>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat-cell">
+        <div class="stat-num">12 400+</div>
+        <div class="stat-label">Игроков в базе</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num">3 200</div>
+        <div class="stat-label">Клубов worldwide</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num">0–1000</div>
+        <div class="stat-label">TVS шкала</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num">4</div>
+        <div class="stat-label">Модуля</div>
+      </div>
+    </div>
+
+    <div class="feature-grid">
+      <div class="feature-card" style="--accent-color:#00E676" onclick="switchTab('interscout')">
+        <div class="feature-icon">⬡</div>
+        <div class="feature-name">InterScout</div>
+        <div class="feature-desc">Загрузи ссылку или видео матча — получи TVS-индекс игрока по 12 параметрам за секунды.</div>
+        <div class="feature-tvs-label">TVS Index · 0 – 1000</div>
+      </div>
+      <div class="feature-card" style="--accent-color:#FFB300" onclick="switchTab('draft')">
+        <div class="feature-icon">◈</div>
+        <div class="feature-name">Draft Zone</div>
+        <div class="feature-desc">Combine-рейтинг с системой сравнения TVS клубов worldwide. Найди свой уровень.</div>
+        <div class="feature-tvs-label">Worldwide Club Ranking</div>
+      </div>
+      <div class="feature-card" style="--accent-color:#29B6F6" onclick="switchTab('trial')">
+        <div class="feature-icon">◎</div>
+        <div class="feature-name">Trial Map</div>
+        <div class="feature-desc">Каталог online/offline trials в клубах и академиях соответствующего TVS-рейтинга.</div>
+        <div class="feature-tvs-label">Online · Offline · Academy</div>
+      </div>
+      <div class="feature-card" style="--accent-color:#CE93D8" onclick="switchTab('tactiq')">
+        <div class="feature-icon">△</div>
+        <div class="feature-name">TactIQ</div>
+        <div class="feature-desc">Тактическая аналитика матчей для команд низших лиг и академий. Insights без штата аналитиков.</div>
+        <div class="feature-tvs-label">Match Intelligence</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Как работает TVS-индекс</div>
+      <div class="card-body">
+        Tetra Velocity Soccer (TVS) — четырёхмерная система оценки. Каждый матч, клип или live-видео обрабатывается по 4 блокам: <strong style="color:var(--tv-text)">Velocity</strong> (скорость принятия решений), <strong style="color:var(--tv-text)">Vision</strong> (тактическое видение), <strong style="color:var(--tv-text)">Value</strong> (влияние на командные метрики) и <strong style="color:var(--tv-text)">Vibe</strong> (психомоторный контроль). Сумма — индекс 0–1000. Тир S: 850+, A: 700–849, B: 550–699, C: 400–549, D: <400.
+      </div>
+    </div>
+  </div>
+
+  <!-- ============== INTERSCOUT PANEL ============== -->
+  <div id="panel-interscout" class="panel">
+    <div class="sec-header">
+      <div class="sec-title">⬡ Inter<span class="sec-accent">Scout</span></div>
+      <div class="sec-subtitle">Вставь ссылку на матч / видео — получи TVS-индекс игрока. Анализ по методологии Tetra Velocity Soccer.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Загрузить видео или ссылку</div>
+      <div class="url-input-row">
+        <input class="url-input" id="video-url" placeholder="youtube.com/watch?v=... или ссылка на матч" />
+        <button class="btn-analyze" onclick="analyzeDemo()">Анализ →</button>
+      </div>
+      <div class="card-body">Поддерживаются: YouTube, Vimeo, прямые ссылки MP4, платформы InStat, Wyscout, Hudl</div>
+    </div>
+
+    <!-- DEMO RESULT -->
+    <div id="scout-result">
+      <div class="tvs-score-big">
+        <div class="tvs-number" id="tvs-main-num">741</div>
+        <div class="tvs-label-big">TVS Index</div>
+        <div class="tvs-tier"><span class="tier-badge tier-a">Tier A</span></div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">Velocity</div>
+          <div class="tvs-meter-wrap">
+            <div class="tvs-bar-row"><span class="tvs-label">Принятие реш.</span><div class="tvs-bar-bg"><div class="tvs-bar-fill" style="width:84%"></div></div><span class="tvs-val">840</span></div>
+            <div class="tvs-bar-row"><span class="tvs-label">Скорость w/ball</span><div class="tvs-bar-bg"><div class="tvs-bar-fill" style="width:77%"></div></div><span class="tvs-val">770</span></div>
+            <div class="tvs-bar-row"><span class="tvs-label">Sprint burst</span><div class="tvs-bar-bg"><div class="tvs-bar-fill" style="width:69%"></div></div><span class="tvs-val">690</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Vision</div>
+          <div class="tvs-meter-wrap">
+            <div class="tvs-bar-row"><span class="tvs-label">Позиционир.</span><div class="tvs-bar-bg"><div class="tvs-bar-fill" style="width:80%"></div></div><span class="tvs-val">800</span></div>
+            <div class="tvs-bar-row"><span class="tvs-label">Пас в разрез</span><div class="tvs-bar-bg"><div class="tvs-bar-fill" style="width:72%"></div></div><span class="tvs-val">720</span></div>
+            <div class="tvs-bar-row"><span class="tvs-label">Чтение игры</span><div class="tvs-bar-bg"><div class="tvs-bar-fill" style="width:88%"></div></div><span class="tvs-val">880</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Value</div>
+          <div class="tvs-meter-wrap">
+            <div class="tvs-bar-row"><span class="tvs-label">xG impact</span><div class="tvs-bar-bg"><div class="tvs-bar-fill" style="width:65%"></div></div><span class="tvs-val">650</span></div>
+            <div class="tvs-bar-row"><span class="tvs-label">Прессинг</span><div class="tvs-bar-bg"><div class="tvs-bar-fill" style="width:71%"></div></div><span class="tvs-val">710</span></div>
+            <div class="tvs-bar-row"><span class="tvs-label">Дуэли</span><div class="tvs-bar-bg"><div class="tvs-bar-fill" style="width:68%"></div></div><span class="tvs-val">680</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Vibe</div>
+          <div class="tvs-meter-wrap">
+            <div class="tvs-bar-row"><span class="tvs-label">Контроль мяча</span><div class="tvs-bar-bg"><div class="tvs-bar-fill" style="width:82%"></div></div><span class="tvs-val">820</span></div>
+            <div class="tvs-bar-row"><span class="tvs-label">Работа ног</span><div class="tvs-bar-bg"><div class="tvs-bar-fill" style="width:75%"></div></div><span class="tvs-val">750</span></div>
+            <div class="tvs-bar-row"><span class="tvs-label">Композиция</span><div class="tvs-bar-bg"><div class="tvs-bar-fill" style="width:79%"></div></div><span class="tvs-val">790</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Рекомендации системы</div>
+        <div class="card-body">TVS 741 (Tier A) → Соответствует уровню клубов 3–4 дивизиона (UEL/Conference зона). Рекомендуемый диапазон для трайала: TVS-рейтинг клуба 680–780. Основная зона роста: Sprint burst (690) и xG impact (650).</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============== DRAFT ZONE PANEL ============== -->
+  <div id="panel-draft" class="panel">
+    <div class="sec-header">
+      <div class="sec-title">◈ Draft Zone <span class="sec-accent">Combine</span></div>
+      <div class="sec-subtitle">Combine-рейтинг игроков с системой сравнения TVS клубов worldwide. Найди свой трансферный коридор.</div>
+    </div>
+
+    <!-- Club compare -->
+    <div class="card">
+      <div class="card-title">Сравнение клубов · TVS Worldwide</div>
+      <div class="club-compare-grid">
+        <div class="club-card">
+          <div class="club-shield" style="background:rgba(0,230,118,.1)">🟢</div>
+          <div class="club-name-big">Шахтёр-2</div>
+          <div class="club-country">🇺🇦 Україна · Перша ліга</div>
+          <div class="club-tvs-big">612</div>
+          <div class="club-tvs-label">TVS Rating</div>
+          <div style="margin-top:6px"><span class="tier-badge tier-b">Tier B</span></div>
+        </div>
+        <div class="vs-divider">VS</div>
+        <div class="club-card">
+          <div class="club-shield" style="background:rgba(41,182,246,.1)">🔵</div>
+          <div class="club-name-big">Lechia Gdańsk</div>
+          <div class="club-country">🇵🇱 Poland · Ekstraklasa</div>
+          <div class="club-tvs-big">658</div>
+          <div class="club-tvs-label">TVS Rating</div>
+          <div style="margin-top:6px"><span class="tier-badge tier-b">Tier B</span></div>
+        </div>
+      </div>
+      <div style="padding: 4px 0">
+        <div class="stat-compare-row">
+          <span class="stat-name" style="font-size:11px;color:var(--tv-muted)">Прессинг</span>
+          <span class="stat-val-a">71</span>
+          <div class="stat-bars"><div class="stat-bar-a" style="width:71%"></div><div class="stat-bar-b" style="width:79%"></div></div>
+          <span class="stat-val-b">79</span>
+        </div>
+        <div class="stat-compare-row">
+          <span class="stat-name" style="font-size:11px;color:var(--tv-muted)">Владение</span>
+          <span class="stat-val-a">58</span>
+          <div class="stat-bars"><div class="stat-bar-a" style="width:58%"></div><div class="stat-bar-b" style="width:64%"></div></div>
+          <span class="stat-val-b">64</span>
+        </div>
+        <div class="stat-compare-row">
+          <span class="stat-name" style="font-size:11px;color:var(--tv-muted)">xG/матч</span>
+          <span class="stat-val-a">62</span>
+          <div class="stat-bars"><div class="stat-bar-a" style="width:62%"></div><div class="stat-bar-b" style="width:68%"></div></div>
+          <span class="stat-val-b">68</span>
+        </div>
+        <div class="stat-compare-row">
+          <span class="stat-name" style="font-size:11px;color:var(--tv-muted)">Молодёжь %</span>
+          <span class="stat-val-a">44</span>
+          <div class="stat-bars"><div class="stat-bar-a" style="width:44%"></div><div class="stat-bar-b" style="width:38%"></div></div>
+          <span class="stat-val-b">38</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Combine leaderboard -->
+    <div class="card">
+      <div class="card-title">Combine Leaderboard · текущий цикл</div>
+      <div id="leaderboard">
+        <div class="player-row">
+          <div class="player-rank gold">1</div>
+          <div class="player-avatar" style="border-color:var(--tv-amber)">АМ</div>
+          <div class="player-info"><div class="player-name">Andriy M.</div><div class="player-meta">CM · 21 · 🇺🇦</div></div>
+          <div class="player-tvs">841</div>
+          <div class="player-tier"><span class="tier-badge tier-s">S</span></div>
+          <button class="compare-btn" onclick="sendPrompt('Сравни игрока Andriy M. с топ клубами в Draft Zone TVS')">Compare ↗</button>
+        </div>
+        <div class="player-row">
+          <div class="player-rank silver">2</div>
+          <div class="player-avatar" style="border-color:#9E9E9E">KP</div>
+          <div class="player-info"><div class="player-name">Krzysztof P.</div><div class="player-meta">RW · 19 · 🇵🇱</div></div>
+          <div class="player-tvs">798</div>
+          <div class="player-tier"><span class="tier-badge tier-a">A</span></div>
+          <button class="compare-btn" onclick="sendPrompt('Найди клубы для Krzysztof P. с TVS 798 в Trial Map')">Compare ↗</button>
+        </div>
+        <div class="player-row">
+          <div class="player-rank bronze">3</div>
+          <div class="player-avatar" style="border-color:#8D6E63">DV</div>
+          <div class="player-info"><div class="player-name">Dmytro V.</div><div class="player-meta">CB · 23 · 🇺🇦</div></div>
+          <div class="player-tvs">762</div>
+          <div class="player-tier"><span class="tier-badge tier-a">A</span></div>
+          <button class="compare-btn" onclick="sendPrompt('Покажи TVS аналитику для CB уровня 762')">Compare ↗</button>
+        </div>
+        <div class="player-row">
+          <div class="player-rank">4</div>
+          <div class="player-avatar">LS</div>
+          <div class="player-info"><div class="player-name">Lukas S.</div><div class="player-meta">ST · 20 · 🇸🇰</div></div>
+          <div class="player-tvs">734</div>
+          <div class="player-tier"><span class="tier-badge tier-a">A</span></div>
+          <button class="compare-btn" onclick="sendPrompt('Открой Trial Map для ST с TVS 734')">Compare ↗</button>
+        </div>
+        <div class="player-row">
+          <div class="player-rank">5</div>
+          <div class="player-avatar">RT</div>
+          <div class="player-info"><div class="player-name">Radu T.</div><div class="player-meta">LB · 22 · 🇷🇴</div></div>
+          <div class="player-tvs">691</div>
+          <div class="player-tier"><span class="tier-badge tier-b">B</span></div>
+          <button class="compare-btn" onclick="sendPrompt('Найди клубы Tier B для LB с TVS 691')">Compare ↗</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============== TRIAL MAP PANEL ============== -->
+  <div id="panel-trial" class="panel">
+    <div class="sec-header">
+      <div class="sec-title">◎ Trial <span class="sec-accent">Map</span></div>
+      <div class="sec-subtitle">Каталог клубов и академий с online/offline trials по TVS-диапазону. Подбор под твой индекс.</div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px">
+      <div class="card-title">Фильтр по TVS-диапазону</div>
+      <div style="display:flex;gap:10px;align-items:center;margin-top:4px">
+        <span style="font-size:12px;color:var(--tv-muted)">TVS от</span>
+        <input type="range" id="tvs-from" min="0" max="1000" value="600" step="50" style="flex:1" oninput="updateTvsFilter()">
+        <span style="font-size:12px;color:var(--tv-muted)">до</span>
+        <input type="range" id="tvs-to" min="0" max="1000" value="800" step="50" style="flex:1" oninput="updateTvsFilter()">
+        <span id="tvs-range-label" style="font-family:var(--font-head);font-size:14px;font-weight:700;color:var(--tv-green);min-width:80px;text-align:right">600 – 800</span>
+      </div>
+    </div>
+
+    <div class="filter-row">
+      <button class="filter-chip active" onclick="toggleFilter(this,'all')">Все</button>
+      <button class="filter-chip" onclick="toggleFilter(this,'online')">Online trial</button>
+      <button class="filter-chip" onclick="toggleFilter(this,'offline')">Offline trial</button>
+      <button class="filter-chip" onclick="toggleFilter(this,'academy')">Академия</button>
+      <button class="filter-chip" onclick="toggleFilter(this,'europe')">Европа</button>
+      <button class="filter-chip" onclick="toggleFilter(this,'ua')">Україна</button>
+    </div>
+
+    <div id="club-list">
+      <div class="club-list-item">
+        <div class="club-logo-sm">⚽</div>
+        <div class="club-list-info">
+          <div class="club-list-name">Rukh Lviv Academy</div>
+          <div class="club-list-meta">🇺🇦 Львів · Перша ліга</div>
+          <div class="trial-tags">
+            <span class="trial-tag tag-online">Online</span>
+            <span class="trial-tag tag-offline">Offline</span>
+            <span class="trial-tag tag-academy">Academy U-19</span>
+          </div>
+        </div>
+        <div style="text-align:right">
+          <div class="club-list-tvs">648</div>
+          <div class="tvs-range">TVS 580–720</div>
+        </div>
+      </div>
+      <div class="club-list-item">
+        <div class="club-logo-sm">⚽</div>
+        <div class="club-list-info">
+          <div class="club-list-name">Górnik Zabrze</div>
+          <div class="club-list-meta">🇵🇱 Zabrze · Ekstraklasa</div>
+          <div class="trial-tags">
+            <span class="trial-tag tag-offline">Offline</span>
+          </div>
+        </div>
+        <div style="text-align:right">
+          <div class="club-list-tvs">671</div>
+          <div class="tvs-range">TVS 620–740</div>
+        </div>
+      </div>
+      <div class="club-list-item">
+        <div class="club-logo-sm">⚽</div>
+        <div class="club-list-info">
+          <div class="club-list-name">HNK Rijeka Academy</div>
+          <div class="club-list-meta">🇭🇷 Rijeka · HNL</div>
+          <div class="trial-tags">
+            <span class="trial-tag tag-online">Online</span>
+            <span class="trial-tag tag-academy">Academy U-21</span>
+          </div>
+        </div>
+        <div style="text-align:right">
+          <div class="club-list-tvs">694</div>
+          <div class="tvs-range">TVS 640–760</div>
+        </div>
+      </div>
+      <div class="club-list-item">
+        <div class="club-logo-sm">⚽</div>
+        <div class="club-list-info">
+          <div class="club-list-name">Ferencváros B</div>
+          <div class="club-list-meta">🇭🇺 Budapest · NB I</div>
+          <div class="trial-tags">
+            <span class="trial-tag tag-offline">Offline</span>
+            <span class="trial-tag tag-academy">Academy</span>
+          </div>
+        </div>
+        <div style="text-align:right">
+          <div class="club-list-tvs">728</div>
+          <div class="tvs-range">TVS 680–800</div>
+        </div>
+      </div>
+      <div class="club-list-item">
+        <div class="club-logo-sm">⚽</div>
+        <div class="club-list-info">
+          <div class="club-list-name">NK Olimpija Ljubljana</div>
+          <div class="club-list-meta">🇸🇮 Ljubljana · PrvaLiga</div>
+          <div class="trial-tags">
+            <span class="trial-tag tag-online">Online</span>
+            <span class="trial-tag tag-offline">Offline</span>
+          </div>
+        </div>
+        <div style="text-align:right">
+          <div class="club-list-tvs">755</div>
+          <div class="tvs-range">TVS 700–820</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============== TACTIQ PANEL ============== -->
+  <div id="panel-tactiq" class="panel">
+    <div class="sec-header">
+      <div class="sec-title">△ Tact<span class="sec-accent">IQ</span></div>
+      <div class="sec-subtitle">Тактическая аналитика матчей для команд low-лиг и академий. Постматчевый разбор без штата аналитиков.</div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Матч: Металіст 1925 — Ворскла</div>
+        <div class="card-body" style="margin-bottom:10px">Перша ліга · 22.03.2026</div>
+        <div style="display:flex;gap:12px;align-items:center">
+          <div style="text-align:center;flex:1">
+            <div style="font-family:var(--font-head);font-size:32px;font-weight:900;color:var(--tv-text)">2</div>
+            <div style="font-size:11px;color:var(--tv-muted)">Металіст</div>
+          </div>
+          <div style="font-family:var(--font-head);font-size:22px;color:var(--tv-muted)">—</div>
+          <div style="text-align:center;flex:1">
+            <div style="font-family:var(--font-head);font-size:32px;font-weight:900;color:var(--tv-text)">1</div>
+            <div style="font-size:11px;color:var(--tv-muted)">Ворскла</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">TIQ Score</div>
+        <div class="tvs-meter-wrap" style="margin-top:6px">
+          <div class="tvs-bar-row"><span class="tvs-label">Прессинг</span><div class="tvs-bar-bg"><div class="tvs-bar-fill" style="width:74%"></div></div><span class="tvs-val">74%</span></div>
+          <div class="tvs-bar-row"><span class="tvs-label">Переходы</span><div class="tvs-bar-bg"><div class="tvs-bar-fill" style="width:68%"></div></div><span class="tvs-val">68%</span></div>
+          <div class="tvs-bar-row"><span class="tvs-label">Стандарти</span><div class="tvs-bar-bg"><div class="tvs-bar-fill" style="width:82%"></div></div><span class="tvs-val">82%</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Zone control -->
+    <div class="card">
+      <div class="card-title">Зональный контроль поля</div>
+      <div class="zone-grid">
+        <div class="zone-cell">
+          <div class="zone-name">Свій штраф</div>
+          <div class="zone-pct">34%</div>
+          <div class="zone-heat" style="width:34%"></div>
+        </div>
+        <div class="zone-cell">
+          <div class="zone-name">Середина</div>
+          <div class="zone-pct">41%</div>
+          <div class="zone-heat" style="width:41%"></div>
+        </div>
+        <div class="zone-cell">
+          <div class="zone-name">Чужий штраф</div>
+          <div class="zone-pct">25%</div>
+          <div class="zone-heat" style="width:25%"></div>
+        </div>
+        <div class="zone-cell">
+          <div class="zone-name">Лівий фланг</div>
+          <div class="zone-pct">38%</div>
+          <div class="zone-heat" style="width:38%"></div>
+        </div>
+        <div class="zone-cell">
+          <div class="zone-name">Центр</div>
+          <div class="zone-pct">29%</div>
+          <div class="zone-heat" style="width:29%"></div>
+        </div>
+        <div class="zone-cell">
+          <div class="zone-name">Правий фланг</div>
+          <div class="zone-pct">33%</div>
+          <div class="zone-heat" style="width:33%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Key events -->
+    <div class="card">
+      <div class="card-title">Ключові моменти</div>
+      <div class="match-event">
+        <div class="event-min">12'</div>
+        <div class="event-type">⚡</div>
+        <div><div class="event-desc">Высокий прессинг привёл к потере Ворскли → контратака 4v3</div><div class="event-meta">Pressing trigger · eff. 87%</div></div>
+      </div>
+      <div class="match-event">
+        <div class="event-min">34'</div>
+        <div class="event-type">⚽</div>
+        <div><div class="event-desc">Гол. Стандарт — угловой, схема «второй темп» сработала</div><div class="event-meta">Set piece · xG 0.42</div></div>
+      </div>
+      <div class="match-event">
+        <div class="event-min">51'</div>
+        <div class="event-type">🔄</div>
+        <div><div class="event-desc">Переход в 4-3-3 после пропущенного. Ширина флангов увеличена на 14%</div><div class="event-meta">Formation shift</div></div>
+      </div>
+      <div class="match-event">
+        <div class="event-min">78'</div>
+        <div class="event-type">⚽</div>
+        <div><div class="event-desc">Гол. Разрезающий пас через линию — TVS Vision класс A исполнителя</div><div class="event-meta">Key pass · TVS Vision 820</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">TactIQ Insights</div>
+      <div class="card-body">
+        Команда доминировала в переходных фазах (68% эффективности). Слабое место: правый фланг в обороне — 4 из 6 опасных атак соперника прошли через зону RB. Рекомендация: в следующем матче смещение опорного ближе к правому центру в позиционной обороне. Стандарти — сильная сторона (82%), стоит увеличить долю угловых с «розыгрышем».
+      </div>
+    </div>
+  </div>
+
+</div><!-- /wrap -->
+
+<script>
+function switchTab(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  const tabs = {'home':0,'interscout':1,'draft':2,'trial':3,'tactiq':4};
+  document.querySelectorAll('.nav-tab')[tabs[id]].classList.add('active');
+}
+
+function analyzeDemo() {
+  const url = document.getElementById('video-url').value.trim();
+  const nums = [680 + Math.floor(Math.random()*200), 700 + Math.floor(Math.random()*180)];
+  const score = nums[0];
+  document.getElementById('tvs-main-num').textContent = score;
+  const tiers = [{min:850,cls:'tier-s',lbl:'S'},{min:700,cls:'tier-a',lbl:'A'},{min:550,cls:'tier-b',lbl:'B'},{min:400,cls:'tier-c',lbl:'C'},{min:0,cls:'tier-d',lbl:'D'}];
+  const tier = tiers.find(t => score >= t.min);
+  const badge = document.querySelector('.tvs-tier .tier-badge');
+  badge.className = 'tier-badge ' + tier.cls;
+  badge.textContent = 'Tier ' + tier.lbl;
+}
+
+function toggleFilter(el, key) {
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function updateTvsFilter() {
+  const from = document.getElementById('tvs-from').value;
+  const to = document.getElementById('tvs-to').value;
+  const lo = Math.min(from, to), hi = Math.max(from, to);
+  document.getElementById('tvs-range-label').textContent = lo + ' – ' + hi;
+}
+</script>
+</body>
+</html>

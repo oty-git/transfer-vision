@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Transfer Vision · TVS Intelligence Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --tv-green: #00E87A;
+  --tv-green-dim: #00B85E;
+  --tv-green-glow: rgba(0,232,122,0.15);
+  --tv-blue: #0AF0FF;
+  --tv-blue-dim: #08C4CC;
+  --tv-orange: #FF6B2B;
+  --tv-yellow: #FFD60A;
+  --bg-deep: #050A08;
+  --bg-card: #0B1410;
+  --bg-surface: #111C16;
+  --bg-hover: #162018;
+  --border: rgba(0,232,122,0.15);
+  --border-bright: rgba(0,232,122,0.4);
+  --text-primary: #E8F5EE;
+  --text-secondary: #7A9A85;
+  --text-muted: #3D5445;
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg-deep);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Grid bg */
+body::before {
+  content:'';
+  position:fixed; inset:0;
+  background-image:
+    linear-gradient(rgba(0,232,122,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,232,122,0.03) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events:none; z-index:0;
+}
+
+.wrap { position:relative; z-index:1; max-width:1100px; margin:0 auto; padding:0 24px; }
+
+/* ── NAV ── */
+nav {
+  position: sticky; top:0; z-index:100;
+  background: rgba(5,10,8,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+}
+.nav-inner {
+  max-width:1100px; margin:0 auto;
+  display:flex; align-items:center; justify-content:space-between;
+  height: 58px;
+}
+.logo {
+  display:flex; align-items:center; gap:10px;
+}
+.logo-icon {
+  width:32px; height:32px;
+  background: var(--tv-green);
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  display:flex; align-items:center; justify-content:center;
+  font-family: var(--font-display);
+  font-size:14px; color:#000; font-weight:900;
+}
+.logo-text {
+  font-family: var(--font-display);
+  font-size:22px; letter-spacing:0.05em;
+  color: var(--text-primary);
+}
+.logo-text span { color: var(--tv-green); }
+.nav-links {
+  display:flex; gap:28px;
+  font-size:13px; font-weight:500; letter-spacing:0.08em;
+  text-transform:uppercase;
+}
+.nav-links a {
+  color: var(--text-secondary);
+  text-decoration:none;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--tv-green); }
+.nav-badge {
+  background: var(--tv-green);
+  color: #000;
+  font-family: var(--font-mono);
+  font-size:11px; font-weight:600;
+  padding:4px 12px; border-radius:2px;
+  letter-spacing:0.1em;
+}
+
+/* ── HERO ── */
+.hero {
+  padding: 80px 0 60px;
+  animation: fadeUp 0.8s ease both;
+}
+.hero-tag {
+  display:inline-flex; align-items:center; gap:8px;
+  background: rgba(0,232,122,0.08);
+  border: 1px solid var(--border-bright);
+  border-radius:2px;
+  padding:6px 14px;
+  font-family: var(--font-mono);
+  font-size:11px; color: var(--tv-green);
+  letter-spacing:0.15em; text-transform:uppercase;
+  margin-bottom:24px;
+}
+.hero-tag::before {
+  content:''; width:6px; height:6px;
+  border-radius:50%; background:var(--tv-green);
+  animation: pulse 1.5s infinite;
+}
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(52px, 8vw, 96px);
+  line-height:0.95;
+  letter-spacing:0.02em;
+  margin-bottom:8px;
+}
+.hero h1 .green { color: var(--tv-green); text-shadow: 0 0 40px rgba(0,232,122,0.4); }
+.hero h1 .dim { color: var(--text-muted); }
+.hero-sub {
+  font-size:18px; font-weight:300;
+  color: var(--text-secondary);
+  max-width:560px;
+  margin: 20px 0 40px;
+  line-height:1.7;
+}
+.hero-sub strong { color: var(--text-primary); font-weight:500; }
+.hero-actions { display:flex; gap:14px; flex-wrap:wrap; }
+.btn-primary {
+  background: var(--tv-green);
+  color:#000; font-weight:700;
+  font-size:14px; letter-spacing:0.06em; text-transform:uppercase;
+  padding:13px 28px; border:none; border-radius:2px;
+  cursor:pointer; transition:all 0.2s;
+  font-family: var(--font-body);
+}
+.btn-primary:hover { background:#00FF8A; transform:translateY(-1px); box-shadow:0 8px 24px rgba(0,232,122,0.3); }
+.btn-secondary {
+  background: transparent;
+  color: var(--text-primary); font-weight:500;
+  font-size:14px; letter-spacing:0.06em; text-transform:uppercase;
+  padding:13px 28px;
+  border: 1px solid var(--border-bright);
+  border-radius:2px; cursor:pointer; transition:all 0.2s;
+  font-family: var(--font-body);
+}
+.btn-secondary:hover { border-color: var(--tv-green); color: var(--tv-green); }
+
+/* ── STATS BAR ── */
+.stats-bar {
+  display:grid; grid-template-columns: repeat(4,1fr);
+  gap:1px; background: var(--border);
+  border: 1px solid var(--border);
+  border-radius:4px;
+  margin: 48px 0;
+  overflow:hidden;
+  animation: fadeUp 0.8s ease 0.2s both;
+}
+.stat-item {
+  background: var(--bg-card);
+  padding:24px 28px;
+  transition:background 0.2s;
+}
+.stat-item:hover { background: var(--bg-hover); }
+.stat-num {
+  font-family: var(--font-display);
+  font-size:42px; color: var(--tv-green);
+  line-height:1;
+}
+.stat-label {
+  font-size:12px; color: var(--text-secondary);
+  letter-spacing:0.1em; text-transform:uppercase;
+  margin-top:6px;
+}
+
+/* ── SECTION TITLES ── */
+.section-label {
+  font-family: var(--font-mono);
+  font-size:11px; color: var(--tv-green);
+  letter-spacing:0.2em; text-transform:uppercase;
+  margin-bottom:12px;
+  display:flex; align-items:center; gap:10px;
+}
+.section-label::after {
+  content:''; flex:1; height:1px;
+  background: linear-gradient(90deg, var(--border-bright), transparent);
+}
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(32px, 5vw, 52px);
+  line-height:1.05;
+  margin-bottom:16px;
+}
+
+/* ── TVS DEMO ── */
+.tvs-demo {
+  margin: 60px 0;
+  animation: fadeUp 0.8s ease 0.3s both;
+}
+.player-selector {
+  display:flex; gap:10px; flex-wrap:wrap;
+  margin-bottom:28px;
+}
+.player-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-size:13px; font-weight:500;
+  padding:8px 18px; border-radius:2px;
+  cursor:pointer; transition:all 0.2s;
+}
+.player-btn.active, .player-btn:hover {
+  background: var(--tv-green-glow);
+  border-color: var(--tv-green);
+  color: var(--tv-green);
+}
+
+.dashboard-grid {
+  display:grid;
+  grid-template-columns: 340px 1fr;
+  gap:16px;
+}
+
+/* PLAYER CARD */
+.player-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius:4px;
+  padding:28px;
+  display:flex; flex-direction:column; gap:20px;
+}
+.player-avatar {
+  width:72px; height:72px; border-radius:3px;
+  background: linear-gradient(135deg, var(--bg-surface), var(--bg-hover));
+  display:flex; align-items:center; justify-content:center;
+  font-size:32px;
+  border: 1px solid var(--border);
+  margin-bottom:4px;
+}
+.player-name {
+  font-family: var(--font-display);
+  font-size:28px; color: var(--text-primary);
+  line-height:1;
+}
+.player-meta {
+  display:flex; flex-wrap:wrap; gap:8px;
+  margin-top:4px;
+}
+.meta-tag {
+  font-family: var(--font-mono);
+  font-size:10px; letter-spacing:0.12em;
+  padding:3px 8px; border-radius:2px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  text-transform:uppercase;
+}
+.meta-tag.pos { border-color: var(--tv-blue); color: var(--tv-blue); background: rgba(10,240,255,0.06); }
+
+/* TVS GAUGE */
+.tvs-gauge-wrap {
+  text-align:center; padding:16px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.tvs-gauge-label {
+  font-family: var(--font-mono);
+  font-size:10px; color: var(--tv-green);
+  letter-spacing:0.2em; text-transform:uppercase;
+  margin-bottom:12px;
+}
+.gauge-outer {
+  width:140px; height:70px;
+  margin:0 auto;
+  position:relative; overflow:hidden;
+}
+.gauge-bg {
+  width:140px; height:140px;
+  border-radius:50%;
+  border:10px solid var(--bg-surface);
+  position:absolute; top:0; left:0;
+  clip-path: inset(0 0 50% 0);
+}
+.gauge-fill {
+  width:140px; height:140px;
+  border-radius:50%;
+  border:10px solid transparent;
+  position:absolute; top:0; left:0;
+  clip-path: inset(0 0 50% 0);
+  border-top-color: var(--tv-green);
+  border-right-color: var(--tv-green);
+  transform-origin:center center;
+  transition: transform 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.gauge-num {
+  font-family: var(--font-display);
+  font-size:40px; color: var(--tv-green);
+  text-shadow: 0 0 20px rgba(0,232,122,0.5);
+  margin-top:8px;
+  transition: all 0.6s;
+}
+.gauge-max { font-size:13px; color: var(--text-muted); }
+
+/* SPEED METRICS */
+.speed-metrics { display:flex; flex-direction:column; gap:10px; }
+.speed-item {}
+.speed-header {
+  display:flex; justify-content:space-between;
+  align-items:center; margin-bottom:5px;
+}
+.speed-name {
+  font-size:12px; font-weight:500;
+  color: var(--text-secondary);
+  letter-spacing:0.05em;
+}
+.speed-val {
+  font-family: var(--font-mono);
+  font-size:13px; font-weight:600;
+}
+.speed-bar-bg {
+  height:5px; background: var(--bg-surface);
+  border-radius:2px; overflow:hidden;
+}
+.speed-bar-fill {
+  height:100%; border-radius:2px;
+  transition: width 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.s-tech { --c: var(--tv-green); }
+.s-phys { --c: var(--tv-blue); }
+.s-cog  { --c: var(--tv-yellow); }
+.s-dec  { --c: var(--tv-orange); }
+.speed-bar-fill { background: var(--c); box-shadow: 0 0 8px var(--c); }
+.speed-val { color: var(--c); }
+
+/* RIGHT PANEL */
+.right-panel { display:flex; flex-direction:column; gap:14px; }
+
+.metrics-grid {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+.metric-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius:3px;
+  padding:18px 20px;
+  transition: border-color 0.2s, background 0.2s;
+}
+.metric-card:hover { border-color: var(--border-bright); background: var(--bg-hover); }
+.metric-card-label {
+  font-family: var(--font-mono);
+  font-size:10px; color: var(--text-muted);
+  letter-spacing:0.15em; text-transform:uppercase;
+  margin-bottom:8px;
+}
+.metric-card-val {
+  font-family: var(--font-display);
+  font-size:32px; line-height:1;
+}
+.metric-card-sub {
+  font-size:11px; color: var(--text-secondary);
+  margin-top:4px;
+}
+.metric-card-delta {
+  font-family: var(--font-mono);
+  font-size:11px; margin-top:6px;
+}
+.delta-up { color: var(--tv-green); }
+.delta-down { color: var(--tv-orange); }
+
+/* VIDEO ANALYSIS STRIP */
+.video-strip {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius:3px;
+  padding:18px 20px;
+}
+.strip-title {
+  font-family: var(--font-mono);
+  font-size:10px; color: var(--text-muted);
+  letter-spacing:0.15em; text-transform:uppercase;
+  margin-bottom:14px;
+}
+.frames-row {
+  display:flex; gap:8px;
+}
+.frame {
+  flex:1; height:52px; border-radius:2px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  display:flex; align-items:center; justify-content:center;
+  font-size:18px;
+  position:relative;
+  cursor:pointer;
+  transition:all 0.2s;
+  overflow:hidden;
+}
+.frame:hover { border-color: var(--tv-green); }
+.frame.detected::after {
+  content:'';
+  position:absolute; inset:0;
+  background: rgba(0,232,122,0.08);
+}
+.frame.detected { border-color: rgba(0,232,122,0.3); }
+.frame-label {
+  position:absolute; bottom:3px; left:4px;
+  font-family: var(--font-mono);
+  font-size:8px; color: var(--tv-green);
+  letter-spacing:0.1em;
+}
+
+/* COMPARISON TABLE */
+.comp-table {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius:3px;
+  overflow:hidden;
+  margin: 48px 0;
+  animation: fadeUp 0.8s ease 0.4s both;
+}
+.comp-table-header {
+  display:grid; grid-template-columns: 2fr repeat(4,1fr);
+  padding:14px 20px;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size:10px; color: var(--text-muted);
+  letter-spacing:0.15em; text-transform:uppercase;
+  gap:10px;
+}
+.comp-row {
+  display:grid; grid-template-columns: 2fr repeat(4,1fr);
+  padding:14px 20px;
+  border-bottom: 1px solid var(--border);
+  align-items:center;
+  gap:10px;
+  transition:background 0.2s;
+  cursor:pointer;
+}
+.comp-row:last-child { border-bottom:none; }
+.comp-row:hover { background: var(--bg-hover); }
+.comp-player-name {
+  font-weight:600; font-size:14px;
+}
+.comp-pos {
+  font-family: var(--font-mono);
+  font-size:10px; color: var(--tv-blue);
+  letter-spacing:0.1em;
+}
+.comp-score {
+  font-family: var(--font-display);
+  font-size:22px;
+}
+.score-elite { color: var(--tv-green); }
+.score-high { color: var(--tv-yellow); }
+.score-mid { color: var(--tv-orange); }
+.mini-bar {
+  width:100%; height:4px; background: var(--bg-surface);
+  border-radius:2px; overflow:hidden; margin-top:4px;
+}
+.mini-fill { height:100%; border-radius:2px; }
+.fill-g { background: var(--tv-green); }
+.fill-b { background: var(--tv-blue); }
+.fill-y { background: var(--tv-yellow); }
+.fill-o { background: var(--tv-orange); }
+
+/* INDEX BREAKDOWN */
+.index-section {
+  margin: 48px 0;
+  animation: fadeUp 0.8s ease 0.5s both;
+}
+.index-cards {
+  display:grid; grid-template-columns: repeat(4,1fr);
+  gap:14px; margin-top:28px;
+}
+.index-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius:3px; padding:24px 20px;
+  position:relative; overflow:hidden;
+  transition:all 0.25s;
+}
+.index-card:hover { transform:translateY(-3px); border-color: var(--border-bright); }
+.index-card::before {
+  content:'';
+  position:absolute; top:0; left:0; right:0; height:2px;
+}
+.ic-tech::before { background: var(--tv-green); }
+.ic-phys::before { background: var(--tv-blue); }
+.ic-cog::before  { background: var(--tv-yellow); }
+.ic-dec::before  { background: var(--tv-orange); }
+.ic-emoji { font-size:28px; margin-bottom:14px; }
+.ic-title {
+  font-family: var(--font-display);
+  font-size:20px; color: var(--text-primary);
+  margin-bottom:8px;
+}
+.ic-sub {
+  font-size:12px; color: var(--text-secondary);
+  line-height:1.6; margin-bottom:14px;
+}
+.ic-params {
+  display:flex; flex-direction:column; gap:4px;
+}
+.ic-param {
+  font-family: var(--font-mono);
+  font-size:10px; color: var(--text-muted);
+  letter-spacing:0.08em;
+  display:flex; align-items:center; gap:6px;
+}
+.ic-param::before { content:'→'; color: var(--tv-green); }
+.ic-weight {
+  font-family: var(--font-mono);
+  font-size:11px; margin-top:12px;
+  padding:4px 8px; border-radius:2px;
+  background: var(--bg-surface);
+  display:inline-block;
+}
+.ic-tech .ic-weight { color: var(--tv-green); }
+.ic-phys .ic-weight { color: var(--tv-blue); }
+.ic-cog  .ic-weight { color: var(--tv-yellow); }
+.ic-dec  .ic-weight { color: var(--tv-orange); }
+
+/* FORMULA */
+.formula-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius:3px; padding:24px 28px;
+  margin: 32px 0;
+  font-family: var(--font-mono);
+}
+.formula-title {
+  font-size:10px; color: var(--text-muted);
+  letter-spacing:0.2em; text-transform:uppercase;
+  margin-bottom:16px;
+}
+.formula-text {
+  font-size:16px; color: var(--tv-green);
+  line-height:2;
+}
+.formula-text .var { color: var(--text-primary); }
+.formula-text .coef { color: var(--tv-yellow); }
+.formula-text .op { color: var(--text-muted); }
+.formula-note {
+  margin-top:14px; font-size:11px;
+  color: var(--text-secondary); line-height:1.7;
+  font-family: var(--font-body);
+  border-top:1px solid var(--border); padding-top:14px;
+}
+
+/* ECOSYSTEM */
+.ecosystem {
+  margin: 60px 0;
+  animation: fadeUp 0.8s ease 0.6s both;
+}
+.eco-grid {
+  display:grid; grid-template-columns: repeat(3,1fr);
+  gap:14px; margin-top:28px;
+}
+.eco-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius:3px; padding:24px;
+  transition:all 0.2s;
+}
+.eco-card:hover { border-color: var(--border-bright); background: var(--bg-hover); }
+.eco-num {
+  font-family: var(--font-mono);
+  font-size:10px; color: var(--tv-green);
+  letter-spacing:0.15em; margin-bottom:12px;
+}
+.eco-title {
+  font-family: var(--font-display);
+  font-size:22px; margin-bottom:8px;
+}
+.eco-text {
+  font-size:13px; color: var(--text-secondary);
+  line-height:1.7;
+}
+.eco-badge {
+  display:inline-block; margin-top:12px;
+  font-family: var(--font-mono);
+  font-size:9px; letter-spacing:0.12em;
+  text-transform:uppercase;
+  padding:3px 8px; border-radius:2px;
+  border:1px solid;
+}
+.badge-live { border-color:var(--tv-green); color:var(--tv-green); background:rgba(0,232,122,0.06); }
+.badge-ai   { border-color:var(--tv-blue); color:var(--tv-blue); background:rgba(10,240,255,0.06); }
+.badge-mkt  { border-color:var(--tv-yellow); color:var(--tv-yellow); background:rgba(255,214,10,0.06); }
+.badge-api  { border-color:var(--tv-orange); color:var(--tv-orange); background:rgba(255,107,43,0.06); }
+
+/* CTA */
+.cta-section {
+  text-align:center; padding:72px 0;
+  border-top:1px solid var(--border);
+  margin-top:48px;
+}
+.cta-section h2 {
+  font-family: var(--font-display);
+  font-size: clamp(40px,6vw,72px);
+  margin-bottom:16px;
+}
+.cta-section p {
+  color:var(--text-secondary); font-size:17px;
+  max-width:500px; margin:0 auto 32px;
+}
+
+/* ANIMATIONS */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(24px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+@keyframes pulse {
+  0%,100% { opacity:1; } 50% { opacity:0.3; }
+}
+
+@media(max-width:768px){
+  .dashboard-grid { grid-template-columns:1fr; }
+  .stats-bar { grid-template-columns:1fr 1fr; }
+  .index-cards { grid-template-columns:1fr 1fr; }
+  .eco-grid { grid-template-columns:1fr; }
+  .metrics-grid { grid-template-columns:1fr 1fr; }
+  .comp-table-header,.comp-row { grid-template-columns:1fr 1fr 1fr; }
+  .comp-table-header span:nth-child(4),.comp-table-header span:nth-child(5),
+  .comp-row>*:nth-child(4),.comp-row>*:nth-child(5) { display:none; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <div class="logo">
+      <div class="logo-icon">TV</div>
+      <div class="logo-text">Transfer<span>Vision</span></div>
+    </div>
+    <div class="nav-links">
+      <a href="#tvs">TVS Index</a>
+      <a href="#ecosystem">Ecosystem</a>
+      <a href="#scouts">Scouts</a>
+      <a href="#api">API</a>
+    </div>
+    <div class="nav-badge">BETA v0.9</div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="wrap">
+  <section class="hero">
+    <div class="hero-tag">AI-Powered Football Scouting</div>
+    <h1>
+      TRANSFER<br>
+      <span class="green">VISION</span><br>
+      <span class="dim">SCORE™</span>
+    </h1>
+    <p class="hero-sub">
+      Первая в мире платформа, извлекающая <strong>4 индекса скорости</strong> игрока из видео матчей и конвертирующая их в единый <strong>TVS-рейтинг 0–1000</strong> — универсальный язык футбольного скаутинга.
+    </p>
+    <div class="hero-actions">
+      <button class="btn-primary" onclick="scrollToDemo()">▶ Демо TVS</button>
+      <button class="btn-secondary">Запросить доступ</button>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats-bar">
+    <div class="stat-item">
+      <div class="stat-num">847K+</div>
+      <div class="stat-label">Матчей проанализировано</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">12.4K</div>
+      <div class="stat-label">Игроков в базе</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">0.003s</div>
+      <div class="stat-label">Время расчёта TVS</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">94.2%</div>
+      <div class="stat-label">Точность CV-модели</div>
+    </div>
+  </div>
+</div>
+
+<!-- TVS DEMO -->
+<div class="wrap" id="tvs">
+  <div class="tvs-demo">
+    <div class="section-label">// TVS Live Dashboard</div>
+    <div class="section-title">TRANSFER VISION<br><span style="color:var(--tv-green)">SCORE™</span></div>
+    <p style="color:var(--text-secondary);max-width:500px;margin-bottom:28px;">Выберите профиль игрока для просмотра live TVS-индекса, рассчитанного из видеоданных последних 5 матчей.</p>
+
+    <div class="player-selector" id="playerSelector">
+      <button class="player-btn active" onclick="setPlayer(0,this)">Midfielder · 23 y.o.</button>
+      <button class="player-btn" onclick="setPlayer(1,this)">Forward · 19 y.o.</button>
+      <button class="player-btn" onclick="setPlayer(2,this)">Defender · 26 y.o.</button>
+      <button class="player-btn" onclick="setPlayer(3,this)">Goalkeeper · 21 y.o.</button>
+    </div>
+
+    <div class="dashboard-grid">
+      <!-- LEFT: Player Card -->
+      <div class="player-card">
+        <div>
+          <div class="player-avatar" id="playerEmoji">⚽</div>
+          <div class="player-name" id="playerName">ARTEM KOVALENKO</div>
+          <div class="player-meta" id="playerMeta">
+            <span class="meta-tag pos">CM</span>
+            <span class="meta-tag">Ukraine U21</span>
+            <span class="meta-tag">Шахтер U21</span>
+          </div>
+        </div>
+
+        <!-- GAUGE -->
+        <div class="tvs-gauge-wrap">
+          <div class="tvs-gauge-label">TVS SCORE™</div>
+          <div class="gauge-outer">
+            <div class="gauge-bg"></div>
+            <div class="gauge-fill" id="gaugeFill" style="transform:rotate(-5deg)"></div>
+          </div>
+          <div class="gauge-num" id="gaugeNum">0</div>
+          <div class="gauge-max">/ 1000</div>
+        </div>
+
+        <!-- SPEED METRICS -->
+        <div class="speed-metrics">
+          <div class="speed-item s-tech">
+            <div class="speed-header">
+              <span class="speed-name">⚡ Техническая скорость</span>
+              <span class="speed-val" id="vTech">0</span>
+            </div>
+            <div class="speed-bar-bg"><div class="speed-bar-fill" id="bTech" style="width:0%"></div></div>
+          </div>
+          <div class="speed-item s-phys">
+            <div class="speed-header">
+              <span class="speed-name">🏃 Физическая скорость</span>
+              <span class="speed-val" id="vPhys">0</span>
+            </div>
+            <div class="speed-bar-bg"><div class="speed-bar-fill" id="bPhys" style="width:0%"></div></div>
+          </div>
+          <div class="speed-item s-cog">
+            <div class="speed-header">
+              <span class="speed-name">🧠 Когнитивная скорость</span>
+              <span class="speed-val" id="vCog">0</span>
+            </div>
+            <div class="speed-bar-bg"><div class="speed-bar-fill" id="bCog" style="width:0%"></div></div>
+          </div>
+          <div class="speed-item s-dec">
+            <div class="speed-header">
+              <span class="speed-name">🎯 Скорость решений</span>
+              <span class="speed-val" id="vDec">0</span>
+            </div>
+            <div class="speed-bar-bg"><div class="speed-bar-fill" id="bDec" style="width:0%"></div></div>
+          </div>
+        </div>
+
+        <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-muted);letter-spacing:0.1em;">
+          Источник: 5 матчей · 2,847 фреймов · CV v3.1
+        </div>
+      </div>
+
+      <!-- RIGHT: Metrics -->
+      <div class="right-panel">
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-card-label">Покрытие поля</div>
+            <div class="metric-card-val" id="mCoverage" style="color:var(--tv-green)">11.4</div>
+            <div class="metric-card-sub">km / матч</div>
+            <div class="metric-card-delta delta-up" id="dCoverage">↑ +0.8 vs avg</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-card-label">Реакция на мяч</div>
+            <div class="metric-card-val" id="mReaction" style="color:var(--tv-blue)">0.31</div>
+            <div class="metric-card-sub">сек (среднее)</div>
+            <div class="metric-card-delta delta-up" id="dReaction">↑ Top 8%</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-card-label">Точность паса</div>
+            <div class="metric-card-val" id="mPass" style="color:var(--tv-yellow)">87.3%</div>
+            <div class="metric-card-sub">под давлением</div>
+            <div class="metric-card-delta delta-up" id="dPass">↑ Elite zone</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-card-label">Sprint burst</div>
+            <div class="metric-card-val" id="mSprint" style="color:var(--tv-orange)">32.1</div>
+            <div class="metric-card-sub">km/h max</div>
+            <div class="metric-card-delta" id="dSprint" style="color:var(--tv-orange)">→ Liga avg</div>
+          </div>
+        </div>
+
+        <!-- VIDEO STRIP -->
+        <div class="video-strip">
+          <div class="strip-title">// Видеоанализ — последний матч · 47 ключевых моментов</div>
+          <div class="frames-row">
+            <div class="frame detected">⚡<div class="frame-label">T:0.28s</div></div>
+            <div class="frame detected">🎯<div class="frame-label">D:0.41s</div></div>
+            <div class="frame">🏃</div>
+            <div class="frame detected">🧠<div class="frame-label">C:0.19s</div></div>
+            <div class="frame">⚽</div>
+            <div class="frame detected">⚡<div class="frame-label">T:0.22s</div></div>
+            <div class="frame detected">🎯<div class="frame-label">D:0.35s</div></div>
+            <div class="frame">🏃</div>
+          </div>
+        </div>
+
+        <!-- TVS PERCENTILE -->
+        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:3px;padding:18px 20px;">
+          <div class="strip-title">// TVS Percentile · Позиция в мировой базе</div>
+          <div style="display:flex;gap:6px;align-items:flex-end;height:60px;margin-bottom:8px;">
+            <div style="flex:1;background:var(--bg-surface);border-radius:2px;height:20%;display:flex;align-items:flex-end;justify-content:center;padding-bottom:2px;font-family:var(--font-mono);font-size:8px;color:var(--text-muted)">0–200</div>
+            <div style="flex:1;background:var(--bg-surface);border-radius:2px;height:35%"></div>
+            <div style="flex:1;background:var(--bg-surface);border-radius:2px;height:55%"></div>
+            <div style="flex:1;background:rgba(0,232,122,0.15);border:1px solid var(--tv-green);border-radius:2px;height:80%;position:relative">
+              <div style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:8px;color:var(--tv-green);white-space:nowrap" id="youLabel">YOU ★</div>
+            </div>
+            <div style="flex:1;background:var(--bg-surface);border-radius:2px;height:40%"></div>
+            <div style="flex:1;background:var(--bg-surface);border-radius:2px;height:15%"></div>
+          </div>
+          <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-secondary);" id="percentileText">Top 12% среди ЦП мирового уровня · Рекомендован скаутам Лиги 1, Бундеслиги</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPARISON TABLE -->
+  <div class="comp-table" id="compareSection">
+    <div style="padding:18px 20px;border-bottom:1px solid var(--border);">
+      <div class="section-label">// Сравнительная таблица</div>
+    </div>
+    <div class="comp-table-header">
+      <span>Игрок / Клуб</span>
+      <span>TVS™</span>
+      <span>Техника</span>
+      <span>Физика</span>
+      <span>Решения</span>
+    </div>
+    <div class="comp-row" onclick="setPlayer(0,null)">
+      <div><div class="comp-player-name">A. Kovalenko</div><div class="comp-pos">CM · Шахтер U21</div></div>
+      <div><div class="comp-score score-elite">743</div></div>
+      <div><div style="font-size:13px;color:var(--tv-green)">841</div><div class="mini-bar"><div class="mini-fill fill-g" style="width:84%"></div></div></div>
+      <div><div style="font-size:13px;color:var(--tv-blue)">728</div><div class="mini-bar"><div class="mini-fill fill-b" style="width:73%"></div></div></div>
+      <div><div style="font-size:13px;color:var(--tv-orange)">661</div><div class="mini-bar"><div class="mini-fill fill-o" style="width:66%"></div></div></div>
+    </div>
+    <div class="comp-row" onclick="setPlayer(1,null)">
+      <div><div class="comp-player-name">D. Marchetti</div><div class="comp-pos">RW · Napoli Youth</div></div>
+      <div><div class="comp-score score-elite">891</div></div>
+      <div><div style="font-size:13px;color:var(--tv-green)">912</div><div class="mini-bar"><div class="mini-fill fill-g" style="width:91%"></div></div></div>
+      <div><div style="font-size:13px;color:var(--tv-blue)">874</div><div class="mini-bar"><div class="mini-fill fill-b" style="width:87%"></div></div></div>
+      <div><div style="font-size:13px;color:var(--tv-yellow)">869</div><div class="mini-bar"><div class="mini-fill fill-y" style="width:87%"></div></div></div>
+    </div>
+    <div class="comp-row" onclick="setPlayer(2,null)">
+      <div><div class="comp-player-name">K. Brennan</div><div class="comp-pos">CB · Celtic FC</div></div>
+      <div><div class="comp-score score-high">612</div></div>
+      <div><div style="font-size:13px;color:var(--tv-green)">588</div><div class="mini-bar"><div class="mini-fill fill-g" style="width:59%"></div></div></div>
+      <div><div style="font-size:13px;color:var(--tv-blue)">643</div><div class="mini-bar"><div class="mini-fill fill-b" style="width:64%"></div></div></div>
+      <div><div style="font-size:13px;color:var(--tv-orange)">605</div><div class="mini-bar"><div class="mini-fill fill-o" style="width:60%"></div></div></div>
+    </div>
+    <div class="comp-row" onclick="setPlayer(3,null)">
+      <div><div class="comp-player-name">R. Sousa</div><div class="comp-pos">GK · Benfica B</div></div>
+      <div><div class="comp-score score-high">677</div></div>
+      <div><div style="font-size:13px;color:var(--tv-green)">704</div><div class="mini-bar"><div class="mini-fill fill-g" style="width:70%"></div></div></div>
+      <div><div style="font-size:13px;color:var(--tv-blue)">651</div><div class="mini-bar"><div class="mini-fill fill-b" style="width:65%"></div></div></div>
+      <div><div style="font-size:13px;color:var(--tv-yellow)">676</div><div class="mini-bar"><div class="mini-fill fill-y" style="width:68%"></div></div></div>
+    </div>
+  </div>
+
+  <!-- INDEX BREAKDOWN -->
+  <div class="index-section" id="breakdown">
+    <div class="section-label">// TVS Методология</div>
+    <div class="section-title">4 ИНДЕКСА<br><span style="color:var(--tv-green)">СКОРОСТИ™</span></div>
+    <div class="index-cards">
+      <div class="index-card ic-tech">
+        <div class="ic-emoji">⚡</div>
+        <div class="ic-title">Техническая</div>
+        <div class="ic-sub">Скорость исполнения технических действий: первое касание, передача, удар.</div>
+        <div class="ic-params">
+          <div class="ic-param">Время первого касания</div>
+          <div class="ic-param">Скорость обработки мяча</div>
+          <div class="ic-param">Точность под давлением</div>
+          <div class="ic-param">Дриблинг-индекс</div>
+        </div>
+        <div class="ic-weight">Вес: 28%</div>
+      </div>
+      <div class="index-card ic-phys">
+        <div class="ic-emoji">🏃</div>
+        <div class="ic-title">Физическая</div>
+        <div class="ic-sub">Биомеханические параметры движения, извлечённые из видео через pose estimation.</div>
+        <div class="ic-params">
+          <div class="ic-param">Max sprint velocity</div>
+          <div class="ic-param">Ускорение (0–10m)</div>
+          <div class="ic-param">Покрытие поля (км)</div>
+          <div class="ic-param">Explosive burst count</div>
+        </div>
+        <div class="ic-weight">Вес: 22%</div>
+      </div>
+      <div class="index-card ic-cog">
+        <div class="ic-emoji">🧠</div>
+        <div class="ic-title">Когнитивная</div>
+        <div class="ic-sub">Скорость считывания игровых ситуаций: взгляд, позиционирование, антиципация.</div>
+        <div class="ic-params">
+          <div class="ic-param">Pre-action scanning rate</div>
+          <div class="ic-param">Позиционный IQ</div>
+          <div class="ic-param">Скорость антиципации</div>
+          <div class="ic-param">Off-ball movement score</div>
+        </div>
+        <div class="ic-weight">Вес: 26%</div>
+      </div>
+      <div class="index-card ic-dec">
+        <div class="ic-emoji">🎯</div>
+        <div class="ic-title">Решений</div>
+        <div class="ic-sub">Время от считывания ситуации до оптимального действия в условиях давления.</div>
+        <div class="ic-params">
+          <div class="ic-param">Decision latency (ms)</div>
+          <div class="ic-param">Optimal choice rate</div>
+          <div class="ic-param">Under-pressure index</div>
+          <div class="ic-param">Коэффициент риска</div>
+        </div>
+        <div class="ic-weight">Вес: 24%</div>
+      </div>
+    </div>
+
+    <!-- FORMULA -->
+    <div class="formula-box">
+      <div class="formula-title">// TVS™ FORMULA · v3.1</div>
+      <div class="formula-text">
+        <span style="color:var(--tv-green)">TVS</span> <span class="op">=</span> <span class="op">(</span><span class="coef">0.28</span> <span class="op">×</span> <span class="var">S_tech</span> <span class="op">+</span> <span class="coef">0.22</span> <span class="op">×</span> <span class="var">S_phys</span> <span class="op">+</span> <span class="coef">0.26</span> <span class="op">×</span> <span class="var">S_cog</span> <span class="op">+</span> <span class="coef">0.24</span> <span class="op">×</span> <span class="var">S_dec</span><span class="op">)</span> <span class="op">×</span> <span class="coef">K_pos</span> <span class="op">×</span> <span class="coef">K_age</span><br>
+        <span style="color:var(--text-muted);font-size:13px;">где каждый S_i ∈ [0, 1000] · K_pos — позиционный коэффициент · K_age — возрастной модификатор</span>
+      </div>
+      <div class="formula-note">
+        Все параметры извлекаются из видеопотока матча через компьютерное зрение (CV pipeline: YOLOv8 + MediaPipe Pose + собственная модель action recognition). Минимум для расчёта — 3 полных матча. Данные обновляются после каждой игры в режиме реального времени.
+      </div>
+    </div>
+  </div>
+
+  <!-- SCALE -->
+  <div style="margin:48px 0;background:var(--bg-card);border:1px solid var(--border);border-radius:3px;padding:24px 28px;">
+    <div class="section-label">// TVS Scale · Шкала уровней</div>
+    <div style="display:flex;gap:0;border-radius:3px;overflow:hidden;margin-top:16px;height:40px;">
+      <div style="flex:2;background:rgba(100,100,100,0.3);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;color:var(--text-muted)">0–200<br style="display:none"> Amateur</div>
+      <div style="flex:2;background:rgba(255,107,43,0.25);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;color:var(--tv-orange)">200–400<br> Semi-Pro</div>
+      <div style="flex:2;background:rgba(255,214,10,0.2);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;color:var(--tv-yellow)">400–600<br> Professional</div>
+      <div style="flex:2;background:rgba(10,240,255,0.15);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;color:var(--tv-blue)">600–800<br> High Level</div>
+      <div style="flex:2;background:rgba(0,232,122,0.2);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;color:var(--tv-green)">800–950<br> Elite</div>
+      <div style="flex:1;background:rgba(0,232,122,0.4);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;color:#fff;font-weight:700">950+<br>World</div>
+    </div>
+    <div style="display:flex;gap:24px;margin-top:14px;flex-wrap:wrap;">
+      <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-muted)">★ Messi (peak): ~980 · ★ Modric (peak): ~941 · ★ Bellingham: ~913 · ★ Average Liga: ~510</div>
+    </div>
+  </div>
+
+  <!-- ECOSYSTEM -->
+  <div class="ecosystem" id="ecosystem">
+    <div class="section-label">// Transfer Vision Ecosystem</div>
+    <div class="section-title">ЭКОСИСТЕМА<br><span style="color:var(--tv-green)">ПЛАТФОРМЫ</span></div>
+    <div class="eco-grid">
+      <div class="eco-card">
+        <div class="eco-num">MODULE_01</div>
+        <div class="eco-title">VIDEO INGESTION</div>
+        <div class="eco-text">Загрузка видео матчей через API, YouTube-ссылки или прямой стрим. Автоматическое распознавание игроков, команд, тайм-кода.</div>
+        <span class="eco-badge badge-live">Live Processing</span>
+      </div>
+      <div class="eco-card">
+        <div class="eco-num">MODULE_02</div>
+        <div class="eco-title">CV PIPELINE</div>
+        <div class="eco-text">YOLOv8 player detection + MediaPipe Pose для биомеханики + собственная модель событий. 94.2% точность на тестовой выборке.</div>
+        <span class="eco-badge badge-ai">AI Core</span>
+      </div>
+      <div class="eco-card">
+        <div class="eco-num">MODULE_03</div>
+        <div class="eco-title">TVS ENGINE</div>
+        <div class="eco-text">Расчёт 4 индексов скорости и финального TVS-балла. Позиционная калибровка, возрастные модификаторы, лиговый контекст.</div>
+        <span class="eco-badge badge-ai">Proprietary</span>
+      </div>
+      <div class="eco-card">
+        <div class="eco-num">MODULE_04</div>
+        <div class="eco-title">SCOUT PORTAL</div>
+        <div class="eco-text">Дашборды для скаутов и клубов: поиск по TVS-диапазону, позиции, возрасту, лиге. Алёрты при достижении порогового TVS.</div>
+        <span class="eco-badge badge-live">SaaS</span>
+      </div>
+      <div class="eco-card">
+        <div class="eco-num">MODULE_05</div>
+        <div class="eco-title">PLAYER PROFILE</div>
+        <div class="eco-text">Публичные и приватные профили игроков. TVS-история, динамика роста, сравнение с позиционными аналогами топ-лиг.</div>
+        <span class="eco-badge badge-mkt">Marketplace</span>
+      </div>
+      <div class="eco-card">
+        <div class="eco-num">MODULE_06</div>
+        <div class="eco-title">TRANSFER API</div>
+        <div class="eco-text">REST API для интеграции TVS-данных в агентские платформы, клубные CRM, приложения Wyscout / Transfermarkt-style.</div>
+        <span class="eco-badge badge-api">B2B API</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-section">
+    <h2>READY TO <span style="color:var(--tv-green)">SCOUT</span><br>SMARTER?</h2>
+    <p>Transfer Vision открывает ранний доступ для профессиональных скаутов и агентов. Первые 50 клубов — бесплатный план на 6 месяцев.</p>
+    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+      <button class="btn-primary">Получить ранний доступ</button>
+      <button class="btn-secondary">Скачать pitch deck</button>
+    </div>
+    <div style="margin-top:32px;font-family:var(--font-mono);font-size:11px;color:var(--text-muted);letter-spacing:0.1em;">
+      transfer-vision.io · hello@transfer-vision.io · © 2026 Transfer Vision Inc.
+    </div>
+  </div>
+</div>
+
+<script>
+const players = [
+  {
+    name:"ARTEM KOVALENKO", emoji:"⚽",
+    tags:["CM","Ukraine U21","Шахтер U21"],
+    tvs:743, tech:841, phys:728, cog:780, dec:661,
+    coverage:"11.4", reaction:"0.31", pass:"87.3%", sprint:"32.1",
+    dCoverage:"↑ +0.8 vs avg", dReaction:"↑ Top 8%", dPass:"↑ Elite zone", dSprint:"→ Liga avg",
+    pct:"Top 12% среди ЦП мирового уровня · Рекомендован скаутам Лиги 1, Бундеслиги"
+  },
+  {
+    name:"DIEGO MARCHETTI", emoji:"⚡",
+    tags:["RW","Italy U20","Napoli Youth"],
+    tvs:891, tech:912, phys:874, cog:901, dec:869,
+    coverage:"13.1", reaction:"0.24", pass:"91.7%", sprint:"35.4",
+    dCoverage:"↑ +2.5 vs avg", dReaction:"↑ Top 2%", dPass:"↑ World class", dSprint:"↑ Top 5%",
+    pct:"Top 3% среди крайних нападающих · Интерес Ювентус, Дортмунд, Барселона B"
+  },
+  {
+    name:"KIERAN BRENNAN", emoji:"🛡",
+    tags:["CB","Scotland U23","Celtic FC"],
+    tvs:612, tech:588, phys:643, cog:630, dec:605,
+    coverage:"10.2", reaction:"0.44", pass:"79.1%", sprint:"29.8",
+    dCoverage:"→ Liga avg", dReaction:"→ Avg", dPass:"↑ +4% vs pos avg", dSprint:"→ Liga avg",
+    pct:"Top 28% среди ЦЗ · Перспективен для Championship, Эредивизи"
+  },
+  {
+    name:"RODRIGO SOUSA", emoji:"🧤",
+    tags:["GK","Portugal U22","Benfica B"],
+    tvs:677, tech:704, phys:651, cog:720, dec:676,
+    coverage:"6.8", reaction:"0.29", pass:"84.5%", sprint:"22.1",
+    dCoverage:"→ GK norm", dReaction:"↑ Top 11%", dPass:"↑ Distribution elite", dSprint:"→ Avg",
+    pct:"Top 18% среди вратарей · Рекомендован скаутам Серии А, Примеры"
+  }
+];
+
+let currentPlayer = 0;
+let animFrame = null;
+
+function setPlayer(idx, btn) {
+  currentPlayer = idx;
+  if(btn) {
+    document.querySelectorAll('.player-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  const p = players[idx];
+  document.getElementById('playerName').textContent = p.name;
+  document.getElementById('playerEmoji').textContent = p.emoji;
+  const meta = document.getElementById('playerMeta');
+  meta.innerHTML = p.tags.map((t,i)=>`<span class="meta-tag${i===0?' pos':''}">${t}</span>`).join('');
+
+  document.getElementById('mCoverage').textContent = p.coverage;
+  document.getElementById('mReaction').textContent = p.reaction;
+  document.getElementById('mPass').textContent = p.pass;
+  document.getElementById('mSprint').textContent = p.sprint;
+  document.getElementById('dCoverage').textContent = p.dCoverage;
+  document.getElementById('dReaction').textContent = p.dReaction;
+  document.getElementById('dPass').textContent = p.dPass;
+  document.getElementById('dSprint').textContent = p.dSprint;
+  document.getElementById('percentileText').textContent = p.pct;
+
+  animateToValues(p);
+}
+
+function animateToValues(p) {
+  if(animFrame) cancelAnimationFrame(animFrame);
+  const duration = 1200;
+  const start = performance.now();
+
+  const targets = { tvs: p.tvs, tech: p.tech, phys: p.phys, cog: p.cog, dec: p.dec };
+  const current = {
+    tvs: parseInt(document.getElementById('gaugeNum').textContent)||0,
+    tech:0, phys:0, cog:0, dec:0
+  };
+
+  function ease(t){ return t<0.5? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2; }
+
+  function frame(now){
+    const t = Math.min((now-start)/duration,1);
+    const e = ease(t);
+    const tvs = Math.round(current.tvs + (targets.tvs-current.tvs)*e);
+    const tech = Math.round(targets.tech*e);
+    const phys = Math.round(targets.phys*e);
+    const cog  = Math.round(targets.cog*e);
+    const dec  = Math.round(targets.dec*e);
+
+    document.getElementById('gaugeNum').textContent = tvs;
+    // gauge fill: 0=0deg, 1000=180deg
+    const deg = (tvs/1000)*180 - 90;
+    document.getElementById('gaugeFill').style.transform = `rotate(${deg}deg)`;
+
+    document.getElementById('vTech').textContent = tech;
+    document.getElementById('vPhys').textContent = phys;
+    document.getElementById('vCog').textContent  = cog;
+    document.getElementById('vDec').textContent  = dec;
+    document.getElementById('bTech').style.width = (tech/10)+'%';
+    document.getElementById('bPhys').style.width = (phys/10)+'%';
+    document.getElementById('bCog').style.width  = (cog/10)+'%';
+    document.getElementById('bDec').style.width  = (dec/10)+'%';
+
+    if(t<1) animFrame = requestAnimationFrame(frame);
+  }
+  animFrame = requestAnimationFrame(frame);
+}
+
+function scrollToDemo(){ document.getElementById('tvs').scrollIntoView({behavior:'smooth'}); }
+
+// Init
+window.addEventListener('load', ()=> setTimeout(()=>setPlayer(0,null), 300));
+</script>
+</body>
+</html>
