@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Transfer Vision — One Pager</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #080A0E;
+    --white: #F2F4F0;
+    --green: #B8F000;
+    --green-dim: #8AB500;
+    --grey: #1C1F26;
+    --grey-mid: #2E3340;
+    --grey-light: #5A6070;
+    --text-muted: #8A909E;
+  }
+
+  html { font-size: 16px; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.6;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* ── PAGE WRAPPER ── */
+  .page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 56px 40px 80px;
+    position: relative;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    border-bottom: 1px solid var(--grey-mid);
+    padding-bottom: 32px;
+    margin-bottom: 48px;
+    gap: 24px;
+  }
+
+  .logo-block {}
+
+  .logo-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 8px;
+  }
+
+  .logo-main {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(52px, 8vw, 80px);
+    letter-spacing: 0.04em;
+    line-height: 0.92;
+    color: var(--white);
+  }
+
+  .logo-main span {
+    color: var(--green);
+  }
+
+  .tagline {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-align: right;
+    line-height: 1.8;
+  }
+
+  /* ── HERO STATEMENT ── */
+  .hero {
+    margin-bottom: 52px;
+  }
+
+  .hero-text {
+    font-size: clamp(18px, 2.8vw, 24px);
+    font-weight: 400;
+    line-height: 1.45;
+    color: var(--white);
+    max-width: 680px;
+  }
+
+  .hero-text strong {
+    color: var(--green);
+    font-weight: 500;
+  }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--grey-mid);
+  }
+
+  /* ── GRID SECTIONS ── */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    margin-bottom: 2px;
+  }
+
+  .three-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 2px;
+    margin-bottom: 2px;
+  }
+
+  .card {
+    background: var(--grey);
+    padding: 28px 28px 32px;
+    position: relative;
+  }
+
+  .card-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    color: var(--grey-mid);
+    line-height: 1;
+    margin-bottom: 12px;
+    letter-spacing: 0.04em;
+  }
+
+  .card-title {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--green);
+    margin-bottom: 10px;
+  }
+
+  .card-body {
+    font-size: 13.5px;
+    color: var(--text-muted);
+    line-height: 1.65;
+    font-weight: 300;
+  }
+
+  .card-body strong {
+    color: var(--white);
+    font-weight: 500;
+  }
+
+  /* ── DIFFERENTIATOR STRIP ── */
+  .diff-strip {
+    background: var(--green);
+    padding: 32px 32px;
+    margin-bottom: 2px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .diff-text {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(22px, 3.5vw, 34px);
+    color: var(--black);
+    letter-spacing: 0.04em;
+    line-height: 1.1;
+  }
+
+  .diff-sub {
+    font-size: 12px;
+    color: var(--black);
+    opacity: 0.65;
+    font-weight: 400;
+    margin-top: 6px;
+    font-family: 'DM Sans', sans-serif;
+    max-width: 460px;
+  }
+
+  .diff-vs {
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .diff-vs-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--black);
+    opacity: 0.5;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .diff-vs-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    color: var(--black);
+    letter-spacing: 0.06em;
+    opacity: 0.5;
+  }
+
+  /* ── INDEX BLOCK ── */
+  .index-block {
+    background: var(--grey);
+    padding: 28px 28px 32px;
+    margin-bottom: 2px;
+  }
+
+  .index-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 2px;
+    margin-top: 20px;
+  }
+
+  .index-item {
+    background: var(--grey-mid);
+    padding: 16px 12px;
+    text-align: center;
+  }
+
+  .index-item-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+
+  .index-item-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    color: var(--green);
+    letter-spacing: 0.04em;
+  }
+
+  .index-note {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    margin-top: 16px;
+    font-style: italic;
+    line-height: 1.55;
+  }
+
+  /* ── MODEL BLOCK ── */
+  .model-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 2px;
+    margin-bottom: 2px;
+  }
+
+  .model-card {
+    background: var(--grey);
+    padding: 22px 22px 26px;
+  }
+
+  .model-who {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--green-dim);
+    margin-bottom: 8px;
+  }
+
+  .model-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 30px;
+    letter-spacing: 0.04em;
+    color: var(--white);
+    margin-bottom: 6px;
+  }
+
+  .model-desc {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  /* ── ROADMAP ── */
+  .roadmap-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+    margin-bottom: 2px;
+  }
+
+  .rm-card {
+    background: var(--grey);
+    padding: 22px 20px;
+  }
+
+  .rm-period {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 10px;
+  }
+
+  .rm-goal {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--white);
+    margin-bottom: 6px;
+    line-height: 1.35;
+  }
+
+  .rm-metric {
+    font-size: 11.5px;
+    color: var(--text-muted);
+  }
+
+  /* ── LEGAL NOTE ── */
+  .legal-bar {
+    background: var(--grey-mid);
+    padding: 20px 28px;
+    margin-bottom: 2px;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .legal-icon {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    color: var(--green);
+    flex-shrink: 0;
+    margin-top: 1px;
+    letter-spacing: 0.04em;
+  }
+
+  .legal-text {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    line-height: 1.65;
+  }
+
+  .legal-text strong {
+    color: var(--white);
+    font-weight: 500;
+  }
+
+  /* ── PILOT ── */
+  .pilot-bar {
+    background: var(--grey);
+    padding: 24px 28px;
+    margin-bottom: 2px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 24px;
+    align-items: center;
+  }
+
+  .pilot-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--green);
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+  }
+
+  .pilot-content {}
+
+  .pilot-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 6px;
+  }
+
+  .pilot-body {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    border-top: 1px solid var(--grey-mid);
+    padding-top: 28px;
+    margin-top: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .footer-left {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+  }
+
+  .footer-left span { color: var(--green); }
+
+  .footer-right {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--text-muted);
+    text-align: right;
+    line-height: 1.8;
+  }
+
+  /* ── SECTION SPACER ── */
+  .section {
+    margin-bottom: 40px;
+  }
+
+  @media (max-width: 680px) {
+    .page { padding: 32px 20px 60px; }
+    .two-col, .three-col, .model-row, .roadmap-row { grid-template-columns: 1fr; }
+    .index-grid { grid-template-columns: repeat(3, 1fr); }
+    .header { grid-template-columns: 1fr; }
+    .tagline { text-align: left; }
+    .diff-strip { grid-template-columns: 1fr; }
+    .diff-vs { text-align: left; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="logo-block">
+      <div class="logo-eyebrow">Career Navigation System</div>
+      <div class="logo-main">TRANSFER<br><span>VISION</span></div>
+    </div>
+    <div class="tagline">
+      Global Football Intelligence<br>
+      B2C · B2B · White-Label<br>
+      Pilot: Real Farma Odessa · 2025
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero section">
+    <div class="hero-text">
+      Most platforms tell you what a player is worth.<br>
+      <strong>Transfer Vision tells you where they belong.</strong><br>
+      <span style="color:var(--text-muted); font-size:0.85em;">An analytical intelligence service that maps the optimal career route for every footballer — and connects clubs to pre-screened, profile-matched talent globally.</span>
+    </div>
+  </div>
+
+  <!-- THE PROBLEM -->
+  <div class="section">
+    <div class="section-label">The Problem</div>
+    <div class="two-col">
+      <div class="card">
+        <div class="card-num">01</div>
+        <div class="card-title">Players</div>
+        <div class="card-body">
+          Millions of talented players have <strong>no agent, no visibility, no structured path.</strong> They don't know their real level, which leagues fit them, or which clubs are realistic targets. Talent goes undiscovered — not for lack of ability, but lack of access.
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-num">02</div>
+        <div class="card-title">Clubs</div>
+        <div class="card-body">
+          Clubs spend large scouting budgets, watch hours of footage, and still miss the right profiles. No efficient filtering. No global reach. No structured compatibility scoring. <strong>Recruitment is slow, expensive, and guesswork-heavy.</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DIFFERENTIATOR -->
+  <div class="diff-strip">
+    <div>
+      <div class="diff-text">Transfermarkt shows value.<br>Transfer Vision shows the route.</div>
+      <div class="diff-sub">Unlike Wyscout or InStat — which are video libraries for scouts — Transfer Vision is a <strong>career navigation engine</strong>: it produces structured compatibility scores, league-fit analysis, and club shortlists, not raw footage.</div>
+    </div>
+    <div class="diff-vs">
+      <div class="diff-vs-label">Beyond</div>
+      <div class="diff-vs-name">Wyscout</div>
+      <div class="diff-vs-name">InStat</div>
+      <div class="diff-vs-name">Transfermarkt</div>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS — Pro-BTA + API + GIP -->
+  <div class="section" style="margin-top:40px;">
+    <div class="section-label">Methodology — Pro-BTA + API + GIP</div>
+    <div class="three-col">
+      <div class="card">
+        <div class="card-num">01</div>
+        <div class="card-title">Positional Profile + GIP</div>
+        <div class="card-body">
+          Role is defined first: e.g. <strong>Ball-playing CB</strong> or <strong>Box-to-box MF</strong>. Then <strong>Game Intensity Profile (GIP)</strong> is assessed from video — decision time available, opponent pressure density — scored 0–1000. GIP becomes the context multiplier for all subsequent scores.
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-num">02</div>
+        <div class="card-title">Pro-BTA Audit (0–1000)</div>
+        <div class="card-body">
+          Four blocks scored independently:<br><br>
+          <strong>BKE 2.0</strong> — Biomechanics: turns, first step, balance under pressure.<br>
+          <strong>TPA 2.0</strong> — Technique: release time (RTI), pass accuracy, weak foot.<br>
+          <strong>CPS 2.0</strong> — Cognition: scanning frequency, decision latency.<br>
+          <strong>CTI 2.0</strong> — Context: impact on game, adjusted for GIP intensity.
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-num">03</div>
+        <div class="card-title">TVS 2.0 Calculation + API</div>
+        <div class="card-body">
+          <strong>Base Score</strong> = (BKE + TPA + CPS + CTI) / 4<br><br>
+          Three multipliers applied:<br>
+          <strong>K<sub>GIP</sub></strong>: Low ×0.7 · Med ×1.0 · High ×1.2<br>
+          <strong>K<sub>league</sub></strong>: Africa ×0.6 · Top-5 EU ×1.2<br>
+          <strong>K<sub>age</sub></strong>: 17–19 ×1.5 · 20–22 ×1.3 · 23–25 ×1.1<br><br>
+          <strong>API</strong> (Age & Potential Index) generates current TVS + projected pTVS in 3 years.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TVS INDEX EXAMPLE -->
+  <div class="index-block section">
+    <div class="section-label">TVS 2.0 — Example Output (Box-to-box MF · Age 21 · GIP: High)</div>
+
+    <!-- BTA scores -->
+    <div style="display:grid; grid-template-columns: repeat(4,1fr); gap:2px; margin-top:20px;">
+      <div class="index-item">
+        <div class="index-item-label">BKE 2.0</div>
+        <div class="index-item-val">730</div>
+      </div>
+      <div class="index-item">
+        <div class="index-item-label">TPA 2.0</div>
+        <div class="index-item-val">695</div>
+      </div>
+      <div class="index-item">
+        <div class="index-item-label">CPS 2.0</div>
+        <div class="index-item-val">710</div>
+      </div>
+      <div class="index-item">
+        <div class="index-item-label">CTI 2.0</div>
+        <div class="index-item-val">755</div>
+      </div>
+    </div>
+
+    <!-- multipliers + result -->
+    <div style="display:grid; grid-template-columns: repeat(3,1fr) 2fr; gap:2px; margin-top:2px;">
+      <div class="index-item" style="background:var(--black);">
+        <div class="index-item-label">K<sub>GIP</sub> High</div>
+        <div class="index-item-val" style="color:var(--white);">×1.2</div>
+      </div>
+      <div class="index-item" style="background:var(--black);">
+        <div class="index-item-label">K<sub>league</sub> Poland</div>
+        <div class="index-item-val" style="color:var(--white);">×0.9</div>
+      </div>
+      <div class="index-item" style="background:var(--black);">
+        <div class="index-item-label">K<sub>age</sub> 21y</div>
+        <div class="index-item-val" style="color:var(--white);">×1.3</div>
+      </div>
+      <div class="index-item" style="background:var(--green); grid-column: span 1;">
+        <div class="index-item-label" style="color:var(--black); opacity:0.6;">TVS 2.0</div>
+        <div class="index-item-val" style="color:var(--black); font-size:28px;">841</div>
+      </div>
+    </div>
+
+    <!-- pTVS + verdict -->
+    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:2px; margin-top:2px;">
+      <div class="index-item">
+        <div class="index-item-label">Shadow Benchmark</div>
+        <div class="index-item-val" style="font-size:14px; padding-top:4px;">Krychowiak<br><span style="font-size:11px; color:var(--text-muted);">at age 21</span></div>
+      </div>
+      <div class="index-item">
+        <div class="index-item-label">pTVS (3 yr)</div>
+        <div class="index-item-val">920</div>
+      </div>
+      <div class="index-item" style="background: #1a2200;">
+        <div class="index-item-label">Verdict</div>
+        <div class="index-item-val" style="color:var(--green); font-size:15px; padding-top:4px;">SIGN</div>
+      </div>
+    </div>
+
+    <div class="index-note">
+      Scale 0–1000. Base Score = avg of BTA blocks. Three context multipliers applied: GIP (match intensity), K<sub>league</sub> (competition level), K<sub>age</sub> (development potential). Verdict: <strong>Sign / Watch / Cut.</strong> Full methodology publicly documented.
+    </div>
+  </div>
+
+  <!-- LEGAL NOTE -->
+  <div class="legal-bar">
+    <div class="legal-icon">§</div>
+    <div class="legal-text">
+      <strong>Transfer Vision is a data and analytics service, not a licensed intermediary.</strong> The platform does not represent players, negotiate contracts, or receive transfer fees. All reports follow the same model as Wyscout and InStat — information products, not agency services. Club-to-player contact occurs independently of the platform. Terms of Service make this explicit.
+    </div>
+  </div>
+
+  <!-- BUSINESS MODEL -->
+  <div class="section" style="margin-top:40px;">
+    <div class="section-label">Business Model</div>
+    <div class="model-row">
+      <div class="model-card">
+        <div class="model-who">Players</div>
+        <div class="model-price">$49–$299</div>
+        <div class="model-desc">TVS report, league map, club shortlist. Online trial access.</div>
+      </div>
+      <div class="model-card">
+        <div class="model-who">Clubs</div>
+        <div class="model-price">$200–400<span style="font-size:14px; font-family:'DM Sans'">/mo</span></div>
+        <div class="model-desc">Talent pool access + 3 full reports/month. Subscription.</div>
+      </div>
+      <div class="model-card">
+        <div class="model-who">Academies</div>
+        <div class="model-price">Custom</div>
+        <div class="model-desc">White-label online trials. Bulk reporting for youth development.</div>
+      </div>
+      <div class="model-card">
+        <div class="model-who">Agents</div>
+        <div class="model-price">$50–100<span style="font-size:14px; font-family:'DM Sans'">/rep</span></div>
+        <div class="model-desc">White-label reports under agent branding. Per-player fee.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PILOT -->
+  <div class="pilot-bar">
+    <div class="pilot-label">Live Pilot</div>
+    <div class="pilot-content">
+      <div class="pilot-title">Real Farma Odessa — Active Testing Ground</div>
+      <div class="pilot-body">
+        The TVS Index methodology is being validated in live conditions: player profiles analysed, reports generated, and compatibility scores tested against real recruitment outcomes. This produces the first dataset for model refinement and provides case studies for B2B outreach to academies and clubs across Poland, Czech Republic, Hungary, and Belgium.
+      </div>
+    </div>
+  </div>
+
+  <!-- ROADMAP -->
+  <div class="section" style="margin-top:40px;">
+    <div class="section-label">12-Month Roadmap</div>
+    <div class="roadmap-row">
+      <div class="rm-card">
+        <div class="rm-period">M1–3</div>
+        <div class="rm-goal">15 validated player cases</div>
+        <div class="rm-metric">Methodology proof + first case studies</div>
+      </div>
+      <div class="rm-card">
+        <div class="rm-period">M2–4</div>
+        <div class="rm-goal">3 academy partners + 10 agents</div>
+        <div class="rm-metric">Channel built · $1–2K early revenue</div>
+      </div>
+      <div class="rm-card">
+        <div class="rm-period">M4–6</div>
+        <div class="rm-goal">5 paying clubs</div>
+        <div class="rm-metric">$1–2K MRR · subscription model live</div>
+      </div>
+      <div class="rm-card">
+        <div class="rm-period">M9–12</div>
+        <div class="rm-goal">20 clubs · 200+ players</div>
+        <div class="rm-metric">$5–8K MRR · process 50% automated</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="footer-left">TRANSFER <span>VISION</span></div>
+    <div class="footer-right">
+      Navigate Your Football Future<br>
+      transfervision.io
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
