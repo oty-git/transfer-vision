@@ -1,0 +1,1688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Transfer Vision — AI Football Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;600;700;800;900&family=Barlow:wght@300;400;500&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black: #080A0C;
+  --navy: #070D1A;
+  --graphite: #0E1318;
+  --graphite-mid: #141C24;
+  --graphite-light: #1C2733;
+  --border: rgba(255,255,255,0.06);
+  --border-bright: rgba(255,255,255,0.12);
+  --gold: #C9A84C;
+  --gold-bright: #E8C96A;
+  --gold-dim: rgba(201,168,76,0.15);
+  --emerald: #00C98A;
+  --emerald-dim: rgba(0,201,138,0.12);
+  --blue: #0D9FFF;
+  --blue-dim: rgba(13,159,255,0.12);
+  --text-primary: #F0F2F4;
+  --text-secondary: #7A8999;
+  --text-tertiary: #3D4F5E;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--black);
+  color: var(--text-primary);
+  font-family: 'Barlow', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ── NOISE OVERLAY ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.4;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 2px; }
+::-webkit-scrollbar-track { background: var(--black); }
+::-webkit-scrollbar-thumb { background: var(--gold); }
+
+/* ── NAV ── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 60px;
+  background: linear-gradient(to bottom, rgba(8,10,12,0.95) 0%, transparent 100%);
+  backdrop-filter: blur(12px);
+}
+
+.nav-logo {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 800;
+  font-size: 18px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+
+.nav-logo span { color: var(--gold); }
+
+.nav-links {
+  display: flex;
+  gap: 40px;
+  list-style: none;
+}
+
+.nav-links a {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.nav-links a:hover { color: var(--text-primary); }
+
+.nav-cta {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--black);
+  background: var(--gold);
+  padding: 10px 24px;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.nav-cta:hover { background: var(--gold-bright); transform: translateY(-1px); }
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 60% 80% at 70% 50%, rgba(13,159,255,0.04) 0%, transparent 70%),
+              radial-gradient(ellipse 40% 60% at 20% 80%, rgba(201,168,76,0.03) 0%, transparent 60%),
+              linear-gradient(135deg, var(--black) 0%, var(--navy) 100%);
+}
+
+.hero-grid-lines {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-size: 80px 80px;
+}
+
+.hero-content {
+  position: relative;
+  padding: 160px 60px 100px;
+  z-index: 2;
+}
+
+.hero-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 32px;
+}
+
+.hero-label::before {
+  content: '';
+  width: 24px;
+  height: 1px;
+  background: var(--gold);
+}
+
+h1 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(56px, 6vw, 88px);
+  font-weight: 900;
+  line-height: 0.92;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  margin-bottom: 28px;
+}
+
+h1 .accent { color: var(--gold); }
+h1 .accent-blue { color: var(--blue); }
+
+.hero-sub {
+  font-size: 16px;
+  font-weight: 300;
+  color: var(--text-secondary);
+  max-width: 440px;
+  margin-bottom: 48px;
+  line-height: 1.7;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.btn-primary {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--black);
+  background: var(--gold);
+  padding: 16px 36px;
+  text-decoration: none;
+  transition: all 0.25s;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--gold-bright);
+  transform: translateX(-100%);
+  transition: transform 0.3s;
+}
+
+.btn-primary:hover::after { transform: translateX(0); }
+.btn-primary span { position: relative; z-index: 1; }
+
+.btn-secondary {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  border: 1px solid var(--border-bright);
+  padding: 16px 36px;
+  text-decoration: none;
+  transition: all 0.25s;
+}
+
+.btn-secondary:hover { border-color: var(--gold); color: var(--gold); }
+
+/* ── HERO DASHBOARD ── */
+.hero-dashboard {
+  position: relative;
+  padding: 160px 60px 100px 20px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dashboard-card {
+  background: var(--graphite);
+  border: 1px solid var(--border);
+  padding: 0;
+  width: 100%;
+  max-width: 500px;
+  position: relative;
+  overflow: hidden;
+}
+
+.dashboard-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.dashboard-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.live-dot {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--emerald);
+  letter-spacing: 0.1em;
+}
+
+.live-dot::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--emerald);
+  animation: pulse-dot 2s infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.8); }
+}
+
+.player-rows { padding: 4px 0; }
+
+.player-row {
+  display: grid;
+  grid-template-columns: 32px 1fr 80px 60px;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.2s;
+  animation: fadeInRow 0.6s ease both;
+}
+
+.player-row:hover { background: var(--graphite-mid); }
+.player-row:last-child { border-bottom: none; }
+
+@keyframes fadeInRow {
+  from { opacity: 0; transform: translateX(10px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.player-row:nth-child(1) { animation-delay: 0.1s; }
+.player-row:nth-child(2) { animation-delay: 0.2s; }
+.player-row:nth-child(3) { animation-delay: 0.3s; }
+.player-row:nth-child(4) { animation-delay: 0.4s; }
+.player-row:nth-child(5) { animation-delay: 0.5s; }
+
+.rank {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-tertiary);
+  text-align: center;
+}
+
+.player-info {}
+
+.player-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--text-primary);
+}
+
+.player-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--text-tertiary);
+  letter-spacing: 0.08em;
+  margin-top: 2px;
+}
+
+.tvs-bar {
+  position: relative;
+  height: 3px;
+  background: var(--graphite-light);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.tvs-fill {
+  position: absolute;
+  top: 0; left: 0; bottom: 0;
+  background: linear-gradient(90deg, var(--emerald), var(--blue));
+  border-radius: 2px;
+  animation: growBar 1s ease both;
+}
+
+@keyframes growBar {
+  from { width: 0 !important; }
+}
+
+.tvs-score {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--gold);
+  text-align: right;
+  letter-spacing: 0.02em;
+}
+
+.dashboard-footer {
+  padding: 14px 20px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.footer-stat {
+  text-align: center;
+}
+
+.footer-stat-value {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.footer-stat-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  color: var(--text-tertiary);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+.footer-divider {
+  width: 1px;
+  height: 28px;
+  background: var(--border);
+}
+
+/* ── STATS BAR ── */
+.stats-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.stat-item {
+  padding: 40px 60px;
+  border-right: 1px solid var(--border);
+  position: relative;
+}
+
+.stat-item:last-child { border-right: none; }
+
+.stat-value {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 52px;
+  font-weight: 900;
+  line-height: 1;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+.stat-value .unit {
+  font-size: 24px;
+  color: var(--gold);
+  margin-left: 2px;
+}
+
+.stat-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  margin-top: 8px;
+}
+
+.stat-accent {
+  position: absolute;
+  bottom: 0; left: 60px;
+  height: 2px;
+  width: 40px;
+  background: var(--gold);
+}
+
+/* ── SECTIONS ── */
+section {
+  padding: 120px 60px;
+}
+
+.section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 24px;
+}
+
+.section-label::before {
+  content: '';
+  width: 24px;
+  height: 1px;
+  background: var(--gold);
+}
+
+h2 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(40px, 4vw, 64px);
+  font-weight: 900;
+  text-transform: uppercase;
+  line-height: 0.95;
+  letter-spacing: -0.01em;
+  margin-bottom: 24px;
+}
+
+h2 .accent { color: var(--gold); }
+h2 .accent-blue { color: var(--blue); }
+h2 .accent-green { color: var(--emerald); }
+
+.section-body {
+  font-size: 16px;
+  font-weight: 300;
+  color: var(--text-secondary);
+  max-width: 540px;
+  line-height: 1.75;
+}
+
+/* ── TVS SECTION ── */
+.tvs-section {
+  background: var(--navy);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+
+.tvs-section::before {
+  content: '';
+  position: absolute;
+  top: -200px; right: -200px;
+  width: 600px; height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(201,168,76,0.05) 0%, transparent 70%);
+}
+
+.tvs-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+
+.tvs-formula {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 40px 0;
+}
+
+.formula-part {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 28px;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  letter-spacing: 0.05em;
+}
+
+.formula-op {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 24px;
+  font-weight: 300;
+  color: var(--text-tertiary);
+}
+
+.formula-eq { color: var(--gold); font-size: 24px; font-weight: 700; }
+
+.tvs-dims {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+
+.tvs-dim {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tvs-dim:nth-child(odd) { padding-right: 24px; border-right: 1px solid var(--border); }
+.tvs-dim:nth-child(even) { padding-left: 24px; }
+
+.dim-icon {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--emerald);
+  flex-shrink: 0;
+}
+
+.dim-icon.blue { background: var(--blue); }
+.dim-icon.gold { background: var(--gold); }
+
+.dim-text {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+/* ── RADAR VISUAL ── */
+.radar-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.radar-svg {
+  width: 320px;
+  height: 320px;
+  animation: rotateSlow 60s linear infinite;
+}
+
+@keyframes rotateSlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.radar-center {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.radar-score {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 56px;
+  font-weight: 900;
+  color: var(--gold);
+  line-height: 1;
+  animation: countUp 2s ease both;
+}
+
+.radar-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+/* ── PROCESS SECTION ── */
+.process-section {
+  position: relative;
+}
+
+.process-flow {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0;
+  margin-top: 80px;
+  position: relative;
+}
+
+.process-flow::before {
+  content: '';
+  position: absolute;
+  top: 28px; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-bright), var(--gold), var(--border-bright), transparent);
+}
+
+.process-step {
+  padding: 0 20px;
+  position: relative;
+  text-align: center;
+}
+
+.step-num {
+  width: 56px;
+  height: 56px;
+  border: 1px solid var(--border-bright);
+  background: var(--graphite);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 24px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--gold);
+  position: relative;
+  transition: all 0.3s;
+}
+
+.process-step:hover .step-num {
+  background: var(--gold-dim);
+  border-color: var(--gold);
+}
+
+.step-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.step-desc {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  line-height: 1.5;
+}
+
+/* ── MAP SECTION ── */
+.map-section {
+  background: var(--graphite);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+
+.map-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+
+.market-list {
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.market-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border);
+  transition: all 0.2s;
+}
+
+.market-item:hover .market-name { color: var(--gold); }
+
+.market-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  transition: color 0.2s;
+}
+
+.market-count {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-tertiary);
+  letter-spacing: 0.1em;
+}
+
+.market-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--emerald);
+  margin-right: 12px;
+  animation: blink 3s ease-in-out infinite;
+}
+
+.market-item:nth-child(2) .market-dot { animation-delay: 0.5s; background: var(--blue); }
+.market-item:nth-child(3) .market-dot { animation-delay: 1s; background: var(--gold); }
+.market-item:nth-child(4) .market-dot { animation-delay: 1.5s; }
+.market-item:nth-child(5) .market-dot { animation-delay: 2s; background: var(--blue); }
+.market-item:nth-child(6) .market-dot { animation-delay: 2.5s; background: var(--gold); }
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.market-left { display: flex; align-items: center; }
+
+/* ── GLOBE ── */
+.globe-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+}
+
+.globe-svg-container {
+  position: relative;
+  width: 360px;
+  height: 360px;
+}
+
+/* ── CLUB SOLUTIONS ── */
+.solutions-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+  margin-top: 80px;
+}
+
+.solution-card {
+  background: var(--graphite);
+  padding: 48px 40px;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.3s;
+}
+
+.solution-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--border);
+  transition: background 0.3s;
+}
+
+.solution-card:hover { background: var(--graphite-mid); }
+.solution-card:hover::before { background: var(--gold); }
+
+.solution-type {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 24px;
+}
+
+.solution-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 28px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  margin-bottom: 32px;
+  line-height: 1.1;
+}
+
+.solution-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.solution-list li {
+  font-size: 14px;
+  color: var(--text-secondary);
+  padding-left: 16px;
+  position: relative;
+}
+
+.solution-list li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--gold);
+  font-size: 12px;
+}
+
+/* ── DIFFERENTIATORS ── */
+.why-section {
+  background: var(--navy);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.why-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  margin-top: 80px;
+}
+
+.why-item {
+  padding: 40px 32px;
+  border-right: 1px solid var(--border);
+  position: relative;
+}
+
+.why-item:last-child { border-right: none; }
+
+.why-icon {
+  font-size: 28px;
+  margin-bottom: 20px;
+  display: block;
+}
+
+.why-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 17px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+.why-desc {
+  font-size: 13px;
+  color: var(--text-tertiary);
+  line-height: 1.6;
+}
+
+/* ── VISION ── */
+.vision-section {
+  text-align: center;
+  padding: 160px 60px;
+  position: relative;
+  overflow: hidden;
+}
+
+.vision-section::before {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 800px; height: 800px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(201,168,76,0.04) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.vision-section h2 { max-width: 800px; margin: 0 auto 32px; }
+
+.vision-section .section-body {
+  margin: 0 auto 60px;
+  max-width: 560px;
+  text-align: center;
+}
+
+.ecosystem-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 80px;
+}
+
+.eco-tag {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: 1px solid var(--border-bright);
+  padding: 10px 24px;
+  color: var(--text-secondary);
+  transition: all 0.2s;
+}
+
+.eco-tag:hover { border-color: var(--gold); color: var(--gold); }
+
+/* ── CTA SECTION ── */
+.cta-section {
+  background: var(--graphite);
+  border-top: 1px solid var(--border);
+  text-align: center;
+  padding: 120px 60px;
+  position: relative;
+  overflow: hidden;
+}
+
+.cta-section::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+.cta-section h2 { margin-bottom: 40px; }
+
+.cta-buttons {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-gold {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  background: var(--gold);
+  color: var(--black);
+  padding: 18px 48px;
+  text-decoration: none;
+  transition: all 0.25s;
+}
+
+.btn-gold:hover { background: var(--gold-bright); transform: translateY(-2px); }
+
+.btn-outline {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  border: 1px solid var(--border-bright);
+  color: var(--text-primary);
+  padding: 18px 48px;
+  text-decoration: none;
+  transition: all 0.25s;
+}
+
+.btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+/* ── FOOTER ── */
+footer {
+  padding: 48px 60px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.footer-logo {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 800;
+  font-size: 16px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+
+.footer-logo span { color: var(--gold); }
+
+.footer-tags {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.footer-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.footer-copy {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--text-tertiary);
+}
+
+/* ── ANIMATIONS ── */
+.fade-in {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── TVS INDEX badge ── */
+.tvs-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--gold-dim);
+  border: 1px solid rgba(201,168,76,0.3);
+  padding: 6px 14px;
+  margin-bottom: 20px;
+}
+
+.tvs-badge-text {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  nav { padding: 20px 30px; }
+  .nav-links { display: none; }
+  .hero { grid-template-columns: 1fr; }
+  .hero-dashboard { display: none; }
+  .hero-content { padding: 140px 30px 80px; }
+  .stats-bar { grid-template-columns: repeat(2, 1fr); }
+  .stat-item { padding: 32px 30px; }
+  section { padding: 80px 30px; }
+  .tvs-grid, .map-grid { grid-template-columns: 1fr; gap: 48px; }
+  .process-flow { grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .process-flow::before { display: none; }
+  .solutions-grid { grid-template-columns: 1fr; }
+  .why-grid { grid-template-columns: repeat(2, 1fr); }
+  footer { flex-direction: column; gap: 24px; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Transfer<span>Vision</span></div>
+  <ul class="nav-links">
+    <li><a href="#tvs">TVS Index</a></li>
+    <li><a href="#discovery">Discovery</a></li>
+    <li><a href="#solutions">Solutions</a></li>
+    <li><a href="#vision">Vision</a></li>
+    <li><a href="#api">API</a></li>
+  </ul>
+  <a href="#cta" class="nav-cta">Request Demo</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero" style="padding:0;">
+  <div class="hero-bg"></div>
+  <div class="hero-grid-lines"></div>
+
+  <div class="hero-content">
+    <div class="hero-label">AI Football Intelligence Network</div>
+    <h1>The Global <span class="accent">AI</span><br>Intelligence<br>Layer for<br><span class="accent-blue">Football</span></h1>
+    <p class="hero-sub">Transfer Vision transforms raw match video into standardized player intelligence using proprietary TVS Index™ technology. Identify undervalued talent faster, smarter, globally.</p>
+    <div class="hero-buttons">
+      <a href="#discovery" class="btn-primary"><span>Explore Players</span></a>
+      <a href="#cta" class="btn-secondary">Upload Video</a>
+    </div>
+  </div>
+
+  <div class="hero-dashboard">
+    <div class="dashboard-card">
+      <div class="dashboard-header">
+        <span class="dashboard-title">TVS™ Live Rankings · Top Prospects</span>
+        <span class="live-dot">LIVE</span>
+      </div>
+      <div class="player-rows">
+        <div class="player-row">
+          <div class="rank">01</div>
+          <div class="player-info">
+            <div class="player-name">M. KALUZHNY</div>
+            <div class="player-meta">CB · 24 · UKRAINE · 191cm</div>
+          </div>
+          <div>
+            <div class="tvs-bar"><div class="tvs-fill" style="width:91%"></div></div>
+            <div style="margin-top:4px;font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--text-tertiary);">VEL + TAC + GIP</div>
+          </div>
+          <div class="tvs-score">91.4</div>
+        </div>
+        <div class="player-row">
+          <div class="rank">02</div>
+          <div class="player-info">
+            <div class="player-name">R. BOGDANOVIĆ</div>
+            <div class="player-meta">CF · 22 · SERBIA · 188cm</div>
+          </div>
+          <div>
+            <div class="tvs-bar"><div class="tvs-fill" style="width:88%"></div></div>
+            <div style="margin-top:4px;font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--text-tertiary);">VEL + ABL + TRA</div>
+          </div>
+          <div class="tvs-score">88.7</div>
+        </div>
+        <div class="player-row">
+          <div class="rank">03</div>
+          <div class="player-info">
+            <div class="player-name">D. SEYDOU</div>
+            <div class="player-meta">CM · 21 · MALI · 179cm</div>
+          </div>
+          <div>
+            <div class="tvs-bar"><div class="tvs-fill" style="width:86%"></div></div>
+            <div style="margin-top:4px;font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--text-tertiary);">TAC + PRS + POS</div>
+          </div>
+          <div class="tvs-score">86.1</div>
+        </div>
+        <div class="player-row">
+          <div class="rank">04</div>
+          <div class="player-info">
+            <div class="player-name">A. PETROV</div>
+            <div class="player-meta">LW · 20 · BULGARIA · 175cm</div>
+          </div>
+          <div>
+            <div class="tvs-bar"><div class="tvs-fill" style="width:83%"></div></div>
+            <div style="margin-top:4px;font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--text-tertiary);">VEL + ABL + DEC</div>
+          </div>
+          <div class="tvs-score">83.9</div>
+        </div>
+        <div class="player-row">
+          <div class="rank">05</div>
+          <div class="player-info">
+            <div class="player-name">T. NZINGA</div>
+            <div class="player-meta">CB · 23 · DR CONGO · 194cm</div>
+          </div>
+          <div>
+            <div class="tvs-bar"><div class="tvs-fill" style="width:81%"></div></div>
+            <div style="margin-top:4px;font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--text-tertiary);">GIP + POS + TRA</div>
+          </div>
+          <div class="tvs-score">81.2</div>
+        </div>
+      </div>
+      <div class="dashboard-footer">
+        <div class="footer-stat">
+          <div class="footer-stat-value">14,800+</div>
+          <div class="footer-stat-label">Players Indexed</div>
+        </div>
+        <div class="footer-divider"></div>
+        <div class="footer-stat">
+          <div class="footer-stat-value">68</div>
+          <div class="footer-stat-label">Nations</div>
+        </div>
+        <div class="footer-divider"></div>
+        <div class="footer-stat">
+          <div class="footer-stat-value">98.4%</div>
+          <div class="footer-stat-label">AI Accuracy</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stat-item fade-in">
+    <div class="stat-value">14<span class="unit">K+</span></div>
+    <div class="stat-label">Players Indexed</div>
+    <div class="stat-accent"></div>
+  </div>
+  <div class="stat-item fade-in">
+    <div class="stat-value">68<span class="unit"></span></div>
+    <div class="stat-label">Countries Covered</div>
+    <div class="stat-accent"></div>
+  </div>
+  <div class="stat-item fade-in">
+    <div class="stat-value">9<span class="unit">D</span></div>
+    <div class="stat-label">Intelligence Dimensions</div>
+    <div class="stat-accent"></div>
+  </div>
+  <div class="stat-item fade-in">
+    <div class="stat-value">98<span class="unit">%</span></div>
+    <div class="stat-label">AI Tracking Accuracy</div>
+    <div class="stat-accent"></div>
+  </div>
+</div>
+
+<!-- WHAT IS TV -->
+<section style="padding: 120px 60px;">
+  <div class="fade-in">
+    <div class="section-label">What Is Transfer Vision</div>
+    <h2>Football Intelligence<br><span class="accent">Redefined</span></h2>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:80px;margin-top:48px;align-items:start;">
+    <div class="fade-in">
+      <p class="section-body" style="max-width:100%;">Transfer Vision is an AI-native football intelligence platform engineered to convert raw match video into scalable recruitment intelligence — no wearables, no manual coding, no guesswork.<br><br>Our system analyzes player movement, technical execution, tactical behavior, and game intensity to create a unified global scouting language accessible to every stakeholder in the football ecosystem.</p>
+    </div>
+    <div class="fade-in" style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);">
+      <div style="background:var(--graphite);padding:28px 24px;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900;color:var(--gold);margin-bottom:8px;">AI-Native</div>
+        <div style="font-size:13px;color:var(--text-tertiary);line-height:1.5;">Built on AI from the ground up, not retrofitted</div>
+      </div>
+      <div style="background:var(--graphite);padding:28px 24px;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900;color:var(--blue);margin-bottom:8px;">Video-First</div>
+        <div style="font-size:13px;color:var(--text-tertiary);line-height:1.5;">Raw footage in, actionable intelligence out</div>
+      </div>
+      <div style="background:var(--graphite);padding:28px 24px;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900;color:var(--emerald);margin-bottom:8px;">Global</div>
+        <div style="font-size:13px;color:var(--text-tertiary);line-height:1.5;">Covering emerging markets others ignore</div>
+      </div>
+      <div style="background:var(--graphite);padding:28px 24px;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900;color:var(--text-primary);margin-bottom:8px;">Unified</div>
+        <div style="font-size:13px;color:var(--text-tertiary);line-height:1.5;">One universal language for football talent</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TVS INDEX -->
+<section class="tvs-section" id="tvs">
+  <div class="tvs-grid">
+    <div class="fade-in">
+      <div class="section-label">TVS Index™</div>
+      <h2>One Universal<br>Football<br><span class="accent">Intelligence</span><br>Score</h2>
+      <div class="tvs-formula">
+        <div class="formula-part" style="color:var(--blue);">Velocity</div>
+        <div class="formula-op">+</div>
+        <div class="formula-part" style="color:var(--emerald);">Ability</div>
+        <div class="formula-op">+</div>
+        <div class="formula-part" style="color:var(--gold);">Tactics</div>
+        <div class="formula-eq">=</div>
+        <div class="formula-part" style="color:var(--gold);font-size:32px;">TVS™</div>
+      </div>
+      <div class="tvs-dims">
+        <div class="tvs-dim"><div class="dim-icon blue"></div><div class="dim-text">Velocity Dynamics</div></div>
+        <div class="tvs-dim"><div class="dim-icon"></div><div class="dim-text">Technical Ability</div></div>
+        <div class="tvs-dim"><div class="dim-icon gold"></div><div class="dim-text">Tactical Awareness</div></div>
+        <div class="tvs-dim"><div class="dim-icon blue"></div><div class="dim-text">Decision Making</div></div>
+        <div class="tvs-dim"><div class="dim-icon"></div><div class="dim-text">Press Resistance</div></div>
+        <div class="tvs-dim"><div class="dim-icon gold"></div><div class="dim-text">Positioning Efficiency</div></div>
+        <div class="tvs-dim"><div class="dim-icon blue"></div><div class="dim-text">Game Intensity (GIP)</div></div>
+        <div class="tvs-dim"><div class="dim-icon"></div><div class="dim-text">Transition Impact</div></div>
+        <div class="tvs-dim" style="border-bottom:none;"><div class="dim-icon gold"></div><div class="dim-text">Match Influence</div></div>
+        <div class="tvs-dim" style="border-bottom:none;border-right:none;padding-left:0;"></div>
+      </div>
+    </div>
+
+    <div class="radar-container fade-in">
+      <svg class="radar-svg" viewBox="0 0 320 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Background rings -->
+        <circle cx="160" cy="160" r="140" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+        <circle cx="160" cy="160" r="112" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+        <circle cx="160" cy="160" r="84" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+        <circle cx="160" cy="160" r="56" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+        <circle cx="160" cy="160" r="28" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+        <!-- Spokes -->
+        <line x1="160" y1="20" x2="160" y2="300" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+        <line x1="20" y1="160" x2="300" y2="160" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+        <line x1="59" y1="59" x2="261" y2="261" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+        <line x1="261" y1="59" x2="59" y2="261" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+        <!-- Data polygon: velocity, ability, tactics, decision, press, position, gip, transition, influence -->
+        <polygon points="160,40 238,80 270,160 238,240 160,272 82,240 50,160 82,80"
+          fill="rgba(0,201,138,0.08)" stroke="var(--emerald)" stroke-width="1.5" opacity="0.7"/>
+        <!-- Inner accent polygon -->
+        <polygon points="160,72 218,100 240,160 218,220 160,244 102,220 80,160 102,100"
+          fill="rgba(13,159,255,0.06)" stroke="var(--blue)" stroke-width="1" opacity="0.5"/>
+        <!-- Outer dashed ring -->
+        <circle cx="160" cy="160" r="140" stroke="var(--gold)" stroke-width="1" stroke-dasharray="8 6" opacity="0.3"/>
+        <!-- Data points -->
+        <circle cx="160" cy="40" r="4" fill="var(--emerald)"/>
+        <circle cx="238" cy="80" r="4" fill="var(--blue)"/>
+        <circle cx="270" cy="160" r="4" fill="var(--gold)"/>
+        <circle cx="238" cy="240" r="4" fill="var(--emerald)"/>
+        <circle cx="160" cy="272" r="4" fill="var(--blue)"/>
+        <circle cx="82" cy="240" r="4" fill="var(--gold)"/>
+        <circle cx="50" cy="160" r="4" fill="var(--emerald)"/>
+        <circle cx="82" cy="80" r="4" fill="var(--blue)"/>
+        <!-- Labels -->
+        <text x="160" y="18" fill="rgba(201,168,76,0.6)" font-size="9" font-family="JetBrains Mono" text-anchor="middle" letter-spacing="1">VEL</text>
+        <text x="284" y="84" fill="rgba(201,168,76,0.6)" font-size="9" font-family="JetBrains Mono" text-anchor="start" letter-spacing="1">ABL</text>
+        <text x="284" y="164" fill="rgba(201,168,76,0.6)" font-size="9" font-family="JetBrains Mono" text-anchor="start" letter-spacing="1">TAC</text>
+        <text x="284" y="244" fill="rgba(201,168,76,0.6)" font-size="9" font-family="JetBrains Mono" text-anchor="start" letter-spacing="1">DEC</text>
+        <text x="160" y="308" fill="rgba(201,168,76,0.6)" font-size="9" font-family="JetBrains Mono" text-anchor="middle" letter-spacing="1">PRS</text>
+        <text x="36" y="244" fill="rgba(201,168,76,0.6)" font-size="9" font-family="JetBrains Mono" text-anchor="end" letter-spacing="1">POS</text>
+        <text x="36" y="164" fill="rgba(201,168,76,0.6)" font-size="9" font-family="JetBrains Mono" text-anchor="end" letter-spacing="1">GIP</text>
+        <text x="36" y="84" fill="rgba(201,168,76,0.6)" font-size="9" font-family="JetBrains Mono" text-anchor="end" letter-spacing="1">TRA</text>
+      </svg>
+      <div class="radar-center">
+        <div class="radar-score">91.4</div>
+        <div class="radar-label">TVS™ Index</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="process-section">
+  <div class="fade-in" style="text-align:center;">
+    <div class="section-label" style="justify-content:center;">From Video to Intelligence</div>
+    <h2>Six Steps.<br><span class="accent">Zero</span> Manual Coding.</h2>
+    <p class="section-body" style="margin:20px auto 0;text-align:center;">Transfer Vision converts raw football footage into actionable scouting intelligence. No wearables. No manual work. Pure AI.</p>
+  </div>
+
+  <div class="process-flow fade-in">
+    <div class="process-step">
+      <div class="step-num">01</div>
+      <div class="step-title">Upload Video</div>
+      <div class="step-desc">Any format, any camera, any league</div>
+    </div>
+    <div class="process-step">
+      <div class="step-num">02</div>
+      <div class="step-title">AI Tracking</div>
+      <div class="step-desc">Computer vision maps every player movement</div>
+    </div>
+    <div class="process-step">
+      <div class="step-num">03</div>
+      <div class="step-title">Performance Recognition</div>
+      <div class="step-desc">Technical actions classified in real time</div>
+    </div>
+    <div class="process-step">
+      <div class="step-num">04</div>
+      <div class="step-title">Tactical Mapping</div>
+      <div class="step-desc">Behavior patterns decoded across 9 dimensions</div>
+    </div>
+    <div class="process-step">
+      <div class="step-num">05</div>
+      <div class="step-title">TVS Generation</div>
+      <div class="step-desc">Universal score assigned and benchmarked</div>
+    </div>
+    <div class="process-step">
+      <div class="step-num">06</div>
+      <div class="step-title">Intel Report</div>
+      <div class="step-desc">Recruitment-ready PDF delivered instantly</div>
+    </div>
+  </div>
+</section>
+
+<!-- DISCOVERY -->
+<section class="map-section" id="discovery">
+  <div class="map-grid">
+    <div class="fade-in">
+      <div class="section-label">Global Player Discovery</div>
+      <h2>Discover Hidden<br>Talent Before<br>the <span class="accent">Market</span></h2>
+      <p class="section-body">Transfer Vision identifies undervalued players across emerging football markets that traditional scouting networks systematically overlook.</p>
+
+      <div class="market-list">
+        <div class="market-item">
+          <div class="market-left"><div class="market-dot"></div><div class="market-name">Eastern Europe</div></div>
+          <div class="market-count">4,200+ players</div>
+        </div>
+        <div class="market-item">
+          <div class="market-left"><div class="market-dot"></div><div class="market-name">Balkans</div></div>
+          <div class="market-count">2,800+ players</div>
+        </div>
+        <div class="market-item">
+          <div class="market-left"><div class="market-dot"></div><div class="market-name">Africa</div></div>
+          <div class="market-count">3,600+ players</div>
+        </div>
+        <div class="market-item">
+          <div class="market-left"><div class="market-dot"></div><div class="market-name">South America</div></div>
+          <div class="market-count">2,100+ players</div>
+        </div>
+        <div class="market-item">
+          <div class="market-left"><div class="market-dot"></div><div class="market-name">Central Asia</div></div>
+          <div class="market-count">890+ players</div>
+        </div>
+        <div class="market-item">
+          <div class="market-left"><div class="market-dot"></div><div class="market-name">Lower Divisions</div></div>
+          <div class="market-count">1,200+ players</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="globe-wrap fade-in">
+      <!-- SVG Globe / Network Visualization -->
+      <svg viewBox="0 0 400 400" width="400" height="400" xmlns="http://www.w3.org/2000/svg">
+        <!-- Base globe outline -->
+        <circle cx="200" cy="200" r="170" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+        <circle cx="200" cy="200" r="170" fill="rgba(7,13,26,0.6)"/>
+        <!-- Latitude lines -->
+        <ellipse cx="200" cy="200" rx="170" ry="50" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+        <ellipse cx="200" cy="200" rx="170" ry="100" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+        <ellipse cx="200" cy="200" rx="170" ry="140" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+        <!-- Longitude lines -->
+        <ellipse cx="200" cy="200" rx="50" ry="170" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+        <ellipse cx="200" cy="200" rx="100" ry="170" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+        <!-- Glow center -->
+        <radialGradient id="globeGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="rgba(13,159,255,0.08)"/>
+          <stop offset="100%" stop-color="transparent"/>
+        </radialGradient>
+        <circle cx="200" cy="200" r="170" fill="url(#globeGlow)"/>
+        <!-- Connection lines (scouting network) -->
+        <line x1="200" y1="200" x2="140" y2="130" stroke="rgba(201,168,76,0.3)" stroke-width="1" stroke-dasharray="3 3"/>
+        <line x1="200" y1="200" x2="270" y2="150" stroke="rgba(0,201,138,0.3)" stroke-width="1" stroke-dasharray="3 3"/>
+        <line x1="200" y1="200" x2="300" y2="230" stroke="rgba(13,159,255,0.3)" stroke-width="1" stroke-dasharray="3 3"/>
+        <line x1="200" y1="200" x2="240" y2="290" stroke="rgba(201,168,76,0.3)" stroke-width="1" stroke-dasharray="3 3"/>
+        <line x1="200" y1="200" x2="120" y2="260" stroke="rgba(0,201,138,0.3)" stroke-width="1" stroke-dasharray="3 3"/>
+        <line x1="200" y1="200" x2="100" y2="190" stroke="rgba(13,159,255,0.3)" stroke-width="1" stroke-dasharray="3 3"/>
+        <line x1="200" y1="200" x2="170" y2="90" stroke="rgba(201,168,76,0.2)" stroke-width="1" stroke-dasharray="3 3"/>
+        <line x1="200" y1="200" x2="310" y2="180" stroke="rgba(0,201,138,0.2)" stroke-width="1" stroke-dasharray="3 3"/>
+        <!-- Scouting nodes -->
+        <circle cx="140" cy="130" r="5" fill="var(--gold)" opacity="0.9">
+          <animate attributeName="opacity" values="0.9;0.3;0.9" dur="2.2s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="270" cy="150" r="5" fill="var(--emerald)" opacity="0.9">
+          <animate attributeName="opacity" values="0.9;0.3;0.9" dur="1.8s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="300" cy="230" r="4" fill="var(--blue)" opacity="0.9">
+          <animate attributeName="opacity" values="0.9;0.3;0.9" dur="2.5s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="240" cy="290" r="5" fill="var(--gold)" opacity="0.9">
+          <animate attributeName="opacity" values="0.9;0.3;0.9" dur="1.6s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="120" cy="260" r="4" fill="var(--emerald)" opacity="0.9">
+          <animate attributeName="opacity" values="0.9;0.3;0.9" dur="2.8s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="100" cy="190" r="5" fill="var(--blue)" opacity="0.9">
+          <animate attributeName="opacity" values="0.9;0.3;0.9" dur="2s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="170" cy="90" r="3" fill="var(--gold)" opacity="0.9">
+          <animate attributeName="opacity" values="0.9;0.3;0.9" dur="3s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="310" cy="180" r="3" fill="var(--emerald)" opacity="0.9">
+          <animate attributeName="opacity" values="0.9;0.3;0.9" dur="1.5s" repeatCount="indefinite"/>
+        </circle>
+        <!-- Center node (TVS Core) -->
+        <circle cx="200" cy="200" r="12" fill="var(--graphite)" stroke="var(--gold)" stroke-width="1.5"/>
+        <circle cx="200" cy="200" r="6" fill="var(--gold)">
+          <animate attributeName="r" values="6;8;6" dur="2s" repeatCount="indefinite"/>
+        </circle>
+        <!-- Outer glow ring -->
+        <circle cx="200" cy="200" r="170" fill="none" stroke="var(--gold)" stroke-width="0.5" opacity="0.15"/>
+        <!-- Labels -->
+        <text x="144" y="120" fill="rgba(201,168,76,0.8)" font-size="8" font-family="JetBrains Mono" text-anchor="middle">POL</text>
+        <text x="278" y="144" fill="rgba(0,201,138,0.8)" font-size="8" font-family="JetBrains Mono" text-anchor="start">BEL</text>
+        <text x="308" y="242" fill="rgba(13,159,255,0.8)" font-size="8" font-family="JetBrains Mono" text-anchor="start">CZE</text>
+        <text x="248" y="306" fill="rgba(201,168,76,0.8)" font-size="8" font-family="JetBrains Mono" text-anchor="middle">HUN</text>
+        <text x="116" y="276" fill="rgba(0,201,138,0.8)" font-size="8" font-family="JetBrains Mono" text-anchor="end">SRB</text>
+        <text x="90" y="202" fill="rgba(13,159,255,0.8)" font-size="8" font-family="JetBrains Mono" text-anchor="end">UKR</text>
+        <text x="170" y="82" fill="rgba(201,168,76,0.8)" font-size="8" font-family="JetBrains Mono" text-anchor="middle">MLI</text>
+        <text x="318" y="178" fill="rgba(0,201,138,0.8)" font-size="8" font-family="JetBrains Mono" text-anchor="start">AUT</text>
+        <text x="207" y="197" fill="rgba(201,168,76,0.8)" font-size="8" font-family="JetBrains Mono" text-anchor="middle" font-weight="bold">TVS</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUTIONS -->
+<section id="solutions" style="padding:120px 60px;">
+  <div class="fade-in" style="text-align:center;">
+    <div class="section-label" style="justify-content:center;">Club Solutions</div>
+    <h2>Reduce<br>Scouting <span class="accent">Uncertainty</span></h2>
+  </div>
+  <div class="solutions-grid">
+    <div class="solution-card fade-in">
+      <div class="solution-type">For Clubs</div>
+      <div class="solution-title">Recruitment Intelligence</div>
+      <ul class="solution-list">
+        <li>AI-assisted recruitment pipeline</li>
+        <li>Player shortlist generation</li>
+        <li>Opponent intelligence reports</li>
+        <li>Squad benchmarking analysis</li>
+        <li>Transfer market inefficiency detection</li>
+      </ul>
+    </div>
+    <div class="solution-card fade-in">
+      <div class="solution-type">For Academies</div>
+      <div class="solution-title">Development Tracking</div>
+      <ul class="solution-list">
+        <li>Youth development intelligence</li>
+        <li>Longitudinal progression tracking</li>
+        <li>Talent projection modeling</li>
+        <li>Position-specific benchmarking</li>
+        <li>Early identification of elite potential</li>
+      </ul>
+    </div>
+    <div class="solution-card fade-in">
+      <div class="solution-type">For Agents</div>
+      <div class="solution-title">Market Positioning</div>
+      <ul class="solution-list">
+        <li>AI-powered player visibility</li>
+        <li>Targeted recruitment exposure</li>
+        <li>TVS™ profile documentation</li>
+        <li>Market value intelligence</li>
+        <li>Optimal transfer timing analysis</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- WHY -->
+<section class="why-section">
+  <div class="fade-in" style="text-align:center;">
+    <div class="section-label" style="justify-content:center;">Why Transfer Vision</div>
+    <h2>The Intelligence<br><span class="accent">Advantage</span></h2>
+  </div>
+  <div class="why-grid">
+    <div class="why-item fade-in">
+      <span class="why-icon">⬡</span>
+      <div class="why-title">AI-Native Architecture</div>
+      <div class="why-desc">Built from the ground up on artificial intelligence — not a traditional scouting tool with AI features bolted on.</div>
+    </div>
+    <div class="why-item fade-in">
+      <span class="why-icon">◈</span>
+      <div class="why-title">Proprietary TVS™ Index</div>
+      <div class="why-desc">A standardized universal score that enables apples-to-apples comparison across leagues, nations, and levels.</div>
+    </div>
+    <div class="why-item fade-in">
+      <span class="why-icon">◎</span>
+      <div class="why-title">Emerging Market Edge</div>
+      <div class="why-desc">Systematic coverage of Eastern Europe, Balkans, Africa, and Central Asia — markets with the highest talent-to-cost ratio.</div>
+    </div>
+    <div class="why-item fade-in">
+      <span class="why-icon">⊛</span>
+      <div class="why-title">Video-to-Data Automation</div>
+      <div class="why-desc">Zero wearables, zero manual coding. Upload footage and receive a full intelligence report within minutes.</div>
+    </div>
+  </div>
+</section>
+
+<!-- API -->
+<section id="api" style="background:var(--graphite);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:120px 60px;">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;">
+    <div class="fade-in">
+      <div class="section-label">Enterprise & API</div>
+      <h2>Football<br>Intelligence<br><span class="accent-blue">Infrastructure</span></h2>
+      <p class="section-body">Transfer Vision is building the future infrastructure layer for football recruitment intelligence. API integrations are planned for clubs, scouting departments, federations, and recruitment platforms.</p>
+      <div style="margin-top:40px;display:flex;gap:12px;flex-wrap:wrap;">
+        <a href="#cta" class="btn-primary"><span>Request API Access</span></a>
+        <a href="#cta" class="btn-secondary">Partner With Us</a>
+      </div>
+    </div>
+    <div class="fade-in" style="background:var(--graphite-mid);border:1px solid var(--border);padding:32px;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.8;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--blue),transparent);"></div>
+      <div style="color:var(--text-tertiary);font-size:10px;letter-spacing:0.15em;margin-bottom:20px;">API INTEGRATION PREVIEW</div>
+      <div><span style="color:var(--text-tertiary)">// Request player TVS score</span></div>
+      <div><span style="color:var(--blue)">GET</span> <span style="color:var(--emerald)">/v1/player/</span><span style="color:var(--gold)">{player_id}</span><span style="color:var(--emerald)">/tvs</span></div>
+      <div style="margin-top:16px;color:var(--text-tertiary)">// Response</div>
+      <div><span style="color:var(--text-secondary)">{</span></div>
+      <div style="padding-left:20px;"><span style="color:var(--gold)">"tvs_score"</span><span style="color:var(--text-tertiary)">:</span> <span style="color:var(--emerald)">91.4</span><span style="color:var(--text-tertiary)">,</span></div>
+      <div style="padding-left:20px;"><span style="color:var(--gold)">"velocity"</span><span style="color:var(--text-tertiary)">:</span> <span style="color:var(--emerald)">93.1</span><span style="color:var(--text-tertiary)">,</span></div>
+      <div style="padding-left:20px;"><span style="color:var(--gold)">"tactical"</span><span style="color:var(--text-tertiary)">:</span> <span style="color:var(--emerald)">88.7</span><span style="color:var(--text-tertiary)">,</span></div>
+      <div style="padding-left:20px;"><span style="color:var(--gold)">"gip"</span><span style="color:var(--text-tertiary)">:</span> <span style="color:var(--emerald)">94.2</span><span style="color:var(--text-tertiary)">,</span></div>
+      <div style="padding-left:20px;"><span style="color:var(--gold)">"market"</span><span style="color:var(--text-tertiary)">:</span> <span style="color:var(--blue)">"Eastern Europe"</span></div>
+      <div><span style="color:var(--text-secondary)">}</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- VISION -->
+<section class="vision-section" id="vision">
+  <div class="fade-in">
+    <div class="section-label" style="justify-content:center;">Vision</div>
+    <h2>Building the<br><span class="accent">Operating System</span><br>for Football<br>Recruitment</h2>
+    <p class="section-body">Transfer Vision aims to become the universal intelligence layer connecting every stakeholder in the global football ecosystem.</p>
+  </div>
+  <div class="ecosystem-tags fade-in">
+    <span class="eco-tag">Players</span>
+    <span class="eco-tag">Clubs</span>
+    <span class="eco-tag">Scouts</span>
+    <span class="eco-tag">Academies</span>
+    <span class="eco-tag">Agents</span>
+    <span class="eco-tag">Federations</span>
+    <span class="eco-tag">Analytics Platforms</span>
+    <span class="eco-tag">API Partners</span>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="cta">
+  <div class="fade-in">
+    <div class="section-label" style="justify-content:center;">Get Started</div>
+    <h2>The Future of<br>Football Intelligence<br><span class="accent">Starts Here</span></h2>
+    <div class="cta-buttons" style="margin-top:48px;">
+      <a href="#" class="btn-gold">Request Demo</a>
+      <a href="#" class="btn-outline">Partner With Us</a>
+      <a href="#discovery" class="btn-outline">Explore TVS Rankings</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Transfer<span>Vision</span></div>
+  <div class="footer-tags">
+    <span class="footer-tag">Global Scouting</span>
+    <span class="footer-tag">AI Recruitment</span>
+    <span class="footer-tag">Player Intelligence</span>
+    <span class="footer-tag">TVS Index™</span>
+  </div>
+  <div class="footer-copy">© 2026 Transfer Vision. All rights reserved.</div>
+</footer>
+
+<script>
+// Intersection observer for fade-ins
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), i * 80);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// Animate TVS score counter
+const scoreEl = document.querySelector('.radar-score');
+if (scoreEl) {
+  const target = 91.4;
+  let current = 0;
+  const duration = 2000;
+  const step = target / (duration / 16);
+  const interval = setInterval(() => {
+    current = Math.min(current + step, target);
+    scoreEl.textContent = current.toFixed(1);
+    if (current >= target) clearInterval(interval);
+  }, 16);
+}
+</script>
+</body>
+</html>
