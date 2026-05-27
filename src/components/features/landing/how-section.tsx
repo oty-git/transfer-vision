@@ -1,109 +1,99 @@
-import { ScrollReveal } from './scroll-reveal';
-import { Container } from './container';
-
 const steps = [
-  {
-    n: '01',
-    icon: '📁',
-    title: 'Загрузите видео',
-    body: 'Перетащите файл с нарезкой или записью матча в наше защищённое облако. MP4, MOV. До 500 MB.',
-  },
-  {
-    n: '02',
-    icon: '⚡',
-    title: 'Анализ AI',
-    body: 'Система анализирует скоростные, технические, физические и тактические показатели игрока в автоматическом режиме.',
-  },
-  {
-    n: '03',
-    icon: '📊',
-    title: 'Результат',
-    body: 'Мгновенный отчёт и ключевая метрика — TVS Index. Ваш точный ориентир на карте талантов.',
-    greenWord: 'TVS Index',
-  },
+  { n: 1, title: 'Загрузка видео', desc: 'Полный матч или хайлайты игрока' },
+  { n: 2, title: 'Идентификация', desc: 'Система определяет действия игрока на поле' },
+  { n: 3, title: 'AI + Скаут', desc: 'AI-метрики + экспертная футбольная оценка' },
+  { n: 4, title: 'TVS Профиль', desc: 'Игрок получает Transfer Vision Score' },
+  { n: 5, title: 'Подбор клуба', desc: 'Вход в скаутинговые базы и просмотры' },
 ] as const;
 
 export function HowSection() {
   return (
-    <section
-      id="how"
-      className="py-[120px] max-[880px]:py-20"
-      style={{
-        background: 'var(--color-tv-mid)',
-        borderTop: '1px solid var(--color-tv-border)',
-        borderBottom: '1px solid var(--color-tv-border)',
-      }}
+    <div
+      className="rounded-[4px] overflow-hidden mb-4"
+      style={{ background: 'white', border: '1px solid #dde5ef' }}
     >
-      <Container>
-        <ScrollReveal className="mb-16">
+      {/* Block header */}
+      <div
+        className="flex items-center justify-between"
+        style={{ background: '#1a2a3a', padding: '10px 16px' }}
+      >
+        <h2
+          style={{
+            fontFamily: 'var(--font-oswald), sans-serif',
+            fontSize: 14,
+            fontWeight: 600,
+            color: 'white',
+            textTransform: 'uppercase',
+            letterSpacing: '0.5px',
+          }}
+        >
+          Как работает Transfer Vision
+        </h2>
+        <a href="#" style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)', textDecoration: 'none' }}>
+          Подробнее →
+        </a>
+      </div>
+
+      {/* Steps grid */}
+      <div className="grid max-[600px]:grid-cols-1" style={{ gridTemplateColumns: 'repeat(5, 1fr)' }}>
+        {steps.map((step, i) => (
           <div
-            className="text-[11px] tracking-[0.2em] uppercase mb-4"
-            style={{ fontFamily: 'var(--font-geist-mono), monospace', color: 'var(--color-tv-green)' }}
-          >
-            Процесс
-          </div>
-          <h2
-            className="leading-[0.95] tracking-[0.01em] mb-3"
+            key={step.n}
+            className="relative text-center"
             style={{
-              fontFamily: 'var(--font-bebas), sans-serif',
-              fontSize: 'clamp(40px, 5vw, 70px)',
+              padding: '16px 12px',
+              borderRight: i < steps.length - 1 ? '1px solid #dde5ef' : 'none',
             }}
           >
-            Как это
-            <br />
-            работает
-          </h2>
-          <p className="text-[16px] max-w-[380px] mt-3" style={{ color: 'var(--color-tv-muted)' }}>
-            Никаких сложных анкет. Только ваш матч и наши алгоритмы.
-          </p>
-        </ScrollReveal>
+            {/* Circle number */}
+            <div
+              className="mx-auto mb-[10px] flex items-center justify-center rounded-full"
+              style={{
+                width: 32,
+                height: 32,
+                background: '#c0392b',
+                fontFamily: 'var(--font-oswald), sans-serif',
+                fontSize: 14,
+                fontWeight: 700,
+                color: 'white',
+              }}
+            >
+              {step.n}
+            </div>
 
-        <div
-          className="grid grid-cols-3 max-[880px]:grid-cols-1"
-          style={{ border: '1px solid var(--color-tv-border)' }}
-        >
-          {steps.map((step, i) => (
-            <ScrollReveal key={step.n} delay={i * 150}>
-              <div
-                className="px-10 py-12 relative overflow-hidden transition-colors group cursor-default"
+            <div
+              className="mb-[6px] uppercase"
+              style={{
+                fontFamily: 'var(--font-oswald), sans-serif',
+                fontSize: 12,
+                fontWeight: 600,
+                color: '#1a2a3a',
+                letterSpacing: '0.3px',
+              }}
+            >
+              {step.title}
+            </div>
+            <div style={{ fontSize: 11, color: '#8a9bb0', lineHeight: 1.5 }}>{step.desc}</div>
+
+            {/* Arrow between steps */}
+            {i < steps.length - 1 && (
+              <span
+                className="absolute"
                 style={{
-                  borderRight: i < steps.length - 1 ? '1px solid var(--color-tv-border)' : undefined,
+                  right: -8,
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  color: '#c0392b',
+                  fontSize: 14,
+                  zIndex: 1,
                 }}
               >
-                <div
-                  className="absolute top-0 left-0 right-0 h-[2px] scale-x-0 origin-left transition-transform duration-300 group-hover:scale-x-100"
-                  style={{ background: 'linear-gradient(90deg, var(--color-tv-green), transparent)' }}
-                />
-                <div
-                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                  style={{ background: 'var(--color-tv-green-subtle)' }}
-                />
-                <div
-                  className="absolute top-4 right-5 leading-[1] z-0"
-                  style={{ fontFamily: 'var(--font-bebas), sans-serif', fontSize: 64, color: 'rgba(0,232,122,0.05)' }}
-                >
-                  {step.n}
-                </div>
-                <div
-                  className="w-11 h-11 flex items-center justify-center text-[18px] mb-6 relative z-[1]"
-                  style={{ border: '1px solid var(--color-tv-border)' }}
-                >
-                  {step.icon}
-                </div>
-                <h3
-                  className="text-[26px] tracking-[0.05em] mb-3 relative z-[1]"
-                  style={{ fontFamily: 'var(--font-bebas), sans-serif' }}
-                >
-                  {step.title}
-                </h3>
-                <p className="text-[14px] leading-[1.75] relative z-[1]" style={{ color: 'var(--color-tv-muted)' }}>
-                  {step.body}
-                </p>
-              </div>
-            </ScrollReveal>
-          ))}
-        </div>
-      </Container>
-    </section>
+                ›
+              </span>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
