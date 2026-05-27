@@ -159,7 +159,7 @@ export function TvsSection() {
                           fontWeight: 600,
                           textTransform: 'uppercase',
                           letterSpacing: '0.3px',
-                          background: row.blue ? '#2c4a6e' : '#1a2a3a',
+                          background: 'blue' in row && row.blue ? '#2c4a6e' : '#1a2a3a',
                           color: 'white',
                         }}
                       >
