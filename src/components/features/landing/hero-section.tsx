@@ -38,7 +38,8 @@ export function HeroSection() {
         }}
       />
 
-      <Container className="relative grid gap-10 items-center max-[900px]:grid-cols-1" style={{ gridTemplateColumns: '1fr 340px' }}>
+      <Container>
+      <div className="relative grid gap-10 items-center grid-cols-[1fr_340px] max-[900px]:grid-cols-1">
         {/* Left — content */}
         <div>
           {/* Badge */}
@@ -186,6 +187,7 @@ export function HeroSection() {
             ))}
           </div>
         </div>
+      </div>
       </Container>
     </section>
   );
