@@ -1,28 +1,18 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono, Bebas_Neue, DM_Sans } from 'next/font/google';
+import { Oswald, Source_Sans_3 } from 'next/font/google';
 import { Providers } from './providers';
 import './globals.css';
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
-});
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
-});
-
-const bebasNeue = Bebas_Neue({
-  weight: '400',
-  variable: '--font-bebas',
+const oswald = Oswald({
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-oswald',
   subsets: ['latin'],
   display: 'swap',
 });
 
-const dmSans = DM_Sans({
-  weight: ['300', '400', '500'],
-  variable: '--font-dm-sans',
+const sourceSans3 = Source_Sans_3({
+  weight: ['300', '400', '600', '700'],
+  variable: '--font-source-sans',
   subsets: ['latin'],
   display: 'swap',
 });
@@ -39,8 +29,8 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${bebasNeue.variable} ${dmSans.variable} h-full antialiased`}
+      lang="ru"
+      className={`${oswald.variable} ${sourceSans3.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
         <Providers>{children}</Providers>
